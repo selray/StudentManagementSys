@@ -95,20 +95,37 @@
         </template>
 
         <div style="margin: 10px 0">
-          <el-input style="width: 200px" placeholder="请输入名称" suffix-icon="el-icon-search" v-model="dept_name"></el-input>
-          <!--             <el-input style="width: 200px" placeholder="请输入邮箱" class="ml-5" suffix-icon="el-icon-message"></el-input>-->
-          <!--             <el-input style="width: 200px" placeholder="请输入地址" class="ml-5" suffix-icon="el-icon-position"></el-input>-->
+          <el-input style="width: 200px" placeholder="请输入学院号" suffix-icon="el-icon-search" v-model="deptid"></el-input>
+           <el-input style="width: 200px" placeholder="请输入学院名" class="ml-5" suffix-icon="el-icon-message" v-model="deptname"></el-input>
+           <el-input style="width: 200px" placeholder="请输入地址" class="ml-5" suffix-icon="el-icon-position" v-model="address"></el-input>
+          <el-input style="width: 200px" placeholder="请输入联系方式" class="ml-5" suffix-icon="el-icon-position" v-model="phonecode"></el-input>
           <el-button class="ml-5" type="primary" @click="load">搜索</el-button>
+          <el-button type="warning" @click="reset">重置</el-button>
         </div>
 
         <div style="margin: 10px 0">
-          <el-button type="primary">新增<i class="el-icon-circle-plus-outline"></i></el-button>
-          <el-button type="danger">批量删除<i class = "el-icon-remove-outline"></i></el-button>
-          <el-button type="danger">导入<i class = "el-icon-bottom"></i></el-button>
+          <el-button type="primary" @click="handleAdd">新增<i class="el-icon-circle-plus-outline"></i></el-button>
+          <el-popconfirm
+              class="ml-5"
+              confirm-button-text="确认"
+              cancel-button-text="取消"
+              :icon="InfoFilled"
+              icon-color="#626AEF"
+              title="是否批量删除?"
+              @confirm="delBatch"
+              @cancel="cancelEvent"
+          >
+          <el-button type="danger" slot="reference">批量删除<i class = "el-icon-remove-outline"></i></el-button>
+          </el-popconfirm>
+            <el-button type="danger" class="ml-5">导入<i class = "el-icon-bottom"></i></el-button>
           <el-button type="danger">导出<i class = "el-icon-top"></i></el-button>
         </div>
 
-        <el-table :data="tableData" border stripe header-cell-class-name="headerBg">
+        <el-table :data="tableData" border stripe header-cell-class-name="headerBg" @selection-change="handleSelectionChange">
+<!--          多选框-->
+          <el-table-column type="selection" width="55" />
+
+
           <el-table-column prop="deptid" label="学院号" width="140">
           </el-table-column>
           <el-table-column prop="deptname" label="学院名称" width="120">
@@ -119,8 +136,22 @@
           </el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
-              <el-button type="success">编辑<i class="el-icon-edit"></i></el-button>
-              <el-button type="danger">删除<i class="el-icon-remove-outline"></i></el-button>
+              <el-button type="success" @click="handleEdit(scope.row)">编辑<i class="el-icon-edit"></i></el-button>
+              <el-popconfirm
+                  class="ml-5"
+                  confirm-button-text="确认"
+                  cancel-button-text="取消"
+                  :icon="InfoFilled"
+                  icon-color="#626AEF"
+                  title="是否删除?"
+                  @confirm="del(scope.row.deptid)"
+                  @cancel="cancelEvent"
+              >
+                <template #reference>
+                  <el-button type="danger">删除<i class="el-icon-remove-outline"></i></el-button>
+                </template>
+              </el-popconfirm>
+
             </template>
           </el-table-column>
         </el-table>
@@ -143,6 +174,31 @@
           />
 
         </div>
+<!--        “新建”弹窗-->
+        <el-dialog title="学院信息" :visible.sync="dialogFormVisible" width="30%" >
+          <el-form label-width="80px" size="small">
+            <el-form-item label="学院号">
+              <el-input v-model="form.deptid" autocomplete="off" />
+            </el-form-item>
+            <el-form-item label="学院名">
+              <el-input v-model="form.deptname" autocomplete="off" />
+            </el-form-item>
+            <el-form-item label="地址">
+              <el-input v-model="form.address" autocomplete="off" />
+            </el-form-item>
+            <el-form-item label="联系方式">
+              <el-input v-model="form.phonecode" autocomplete="off" />
+            </el-form-item>
+          </el-form>
+          <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取消</el-button>
+        <el-button type="primary" @click="save">
+          确认
+        </el-button>
+      </span>
+          </template>
+        </el-dialog>
       </el-main>
     </el-container>
   </el-container>
@@ -152,6 +208,7 @@
 <script>
 // @ is an alias to /src
 import HelloWorld from '@/components/HelloWorld.vue'
+import request from "@/utls/request";
 
 export default {
   name: 'HomeView',
@@ -166,7 +223,13 @@ export default {
       pageNum: 1,
       pageSize: 2,
 
-      dept_name: "",
+      deptname: "",
+      deptid: "",
+      address: "",
+      phonecode: "",
+      dialogFormVisible: false,
+      multipleSelection: [],
+      form: {},
 
       collapseBtnClass: 'el-icon-s-fold',
       isCollapse: false,
@@ -192,13 +255,86 @@ export default {
     },
     load(){
       //请求分页查询数据
-      //向后台请求参数
-      fetch("http://localhost:9090/department/page?pageNum="+this.pageNum+"&pageSize="+this.pageSize+"&deptname="+this.dept_name)
-          .then(res => res.json()).then(res =>{
-        console.log(res)
-        this.tableData = res.data
-        this.total = res.total
+      //通过axios向后台请求参数
+      // fetch("http://localhost:9090/department/page?pageNum="+this.pageNum+"&pageSize="+this.pageSize+"&deptname="+this.deptname)
+      //     .then(res => res.json()).then(res =>{
+      //   console.log(res)
+      //   this.tableData = res.data
+      //   this.total = res.total
+      // })
+
+      //通过request.js中的baseurl已经将前面的http://localhost:9090部分省略了
+      request.get("/department/page",{
+        params:{
+          pageNum: this.pageNum,
+          pageSize: this.pageSize,
+          deptid: this.deptid,
+          deptname: this.deptname,
+          address: this.address,
+          phonecode: this.phonecode
+        }
       })
+          .then(res => {
+            console.log(res)
+            this.tableData = res.records
+            this.total = res.total
+          })
+
+    },
+    save(){
+      //发送数据到后端
+      request.post("/department",this.form)
+          .then(res => {
+            if(res){
+              this.$message.success("保存成功")
+              this.dialogFormVisible = false
+              this.load()
+            }else {
+              this.$message.error("保存失败")
+            }
+          })
+    },
+    handleAdd(){
+      this.dialogFormVisible = true
+      this.form = {}
+    },
+    handleEdit(row){
+      this.form = row //将数据赋予弹窗
+      this.dialogFormVisible = true //显示弹窗
+
+    },
+    del(id){
+      request.delete("/department/" + id)
+          .then(res => {
+            if(res){
+              this.$message.success("删除成功")
+              this.load()
+            }else {
+              this.$message.error("删除失败")
+            }
+          })
+    },
+    handleSelectionChange(val){
+      console.log(val)
+      this.multipleSelection = val
+    },
+    delBatch(){
+      let ids = this.multipleSelection.map(v => v.deptid)   //把一个对象的数组变成一个纯数组
+      request.post("/department/del/batch",ids).then(res => {
+            if(res){
+              this.$message.success("批量删除成功")
+              this.load()
+            }else {
+              this.$message.error("批量删除失败")
+            }
+          })
+    },
+    reset(){
+      this.deptid = ""
+      this.deptname = ""
+      this.address = ""
+      this.phonecode = ""
+      this.load()
     },
     handleSizeChange(pageSize){
       this.pageSize = pageSize

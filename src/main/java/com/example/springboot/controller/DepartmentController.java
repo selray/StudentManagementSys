@@ -38,6 +38,11 @@ public class DepartmentController {
     public boolean  delete(@PathVariable Integer id){
         return depService.removeById(id);
     }
+//    批量删除接口
+    @PostMapping("/del/batch")
+    public boolean  deleteBatch(@RequestBody List<Integer> ids){
+        return depService.removeByIds(ids);
+    }
 
     //分页查询
 //    @GetMapping("/page")  //接口路径
@@ -75,7 +80,8 @@ public class DepartmentController {
         if(!"".equals(phonecode)){
             queryWrapper.like("phonecode",phonecode);
         }
-
+        //倒序
+        //queryWrapper.orderByDesc("id");
 
 
         return depService.page(page,queryWrapper);
