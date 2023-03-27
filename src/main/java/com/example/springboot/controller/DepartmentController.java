@@ -20,8 +20,7 @@ import java.util.Map;
 public class DepartmentController {
     @Autowired
     private DepartmentService depService;
-//    @Autowired
-//    private departmentMapper dep_matter;
+
     //增加
     @PostMapping
     public boolean save(@RequestBody department dep){
@@ -34,6 +33,10 @@ public class DepartmentController {
         return depService.list();
     }
     //    删除
+    @GetMapping("/{id}")
+    public List<department> findOne(@PathVariable Integer id){
+        return depService.list();
+    }
     @DeleteMapping("/{id}")
     public boolean  delete(@PathVariable Integer id){
         return depService.removeById(id);

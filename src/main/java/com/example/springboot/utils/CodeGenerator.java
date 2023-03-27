@@ -23,10 +23,13 @@ public class CodeGenerator {
                 })
                 .packageConfig(builder -> {
                     builder.parent("com.example.springboot") // 设置父包名
-                            .moduleName("") // 设置父包模块名
+                            .moduleName(null) // 设置父包模块名
                             .pathInfo(Collections.singletonMap(OutputFile.mapperXml, "C:\\Users\\yijin\\Desktop\\db_project\\database_project\\Springboot\\src\\main\\resources\\mapper\\")); // 设置mapperXml生成路径
                 })
                 .strategyConfig(builder -> {
+                    builder.entityBuilder().enableLombok();
+                    builder.controllerBuilder().enableHyphenStyle() //开启驼峰转链字符
+                                    .enableRestStyle();         //开启生成RestController控制器
                     builder.addInclude("department") // 设置需要生成的表名
                             .addTablePrefix("t_", "c_"); // 设置过滤表前缀
                 })
