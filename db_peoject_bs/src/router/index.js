@@ -1,28 +1,30 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import HomeView from '../views/Manage.vue'
+import store from "@/store";
+
 
 Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
-    name: 'Manage',
+    path: '/manage',
     component: () => import("../views/Manage.vue"),
-    redirect: "/home",
+    redirect: "/manage/home",
     children:[
-      {path: 'user', name: 'User' , component: () => import('../views/User.vue')},
-      {path: 'home', name: 'Home' , component: () => import('../views/Home.vue')}
+      {path: 'user', name: '首页' , component: () => import('../views/User.vue')},
+      {path: 'home', name: '用户管理' , component: () => import('../views/Home.vue')}
     ]
   },
   {
     path: '/about',
     name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
+    component: () => import('../views/AboutView.vue')
   }
+  // , {
+  //   path:'/login',
+  //   name: 'Login',
+  //   component:() => import('../views/Login.vue')
+  // }
 ]
 
 const router = new VueRouter({
@@ -31,4 +33,10 @@ const router = new VueRouter({
   routes
 })
 
+router.beforeEach((to,from,next)=>{
+  //console.log(from)
+  localStorage.setItem("currentPathName",from.name)  //设置当前路由名称,为了在header组件中使用
+  store.commit("setPath")  //触发store数据更新
+  next()   //路由放行
+})
 export default router
