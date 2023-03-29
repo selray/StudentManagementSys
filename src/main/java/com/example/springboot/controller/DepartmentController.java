@@ -43,17 +43,17 @@ public class DepartmentController {
     private DepartmentService depService;
 
 //登录
-    @PostMapping("/login")
-    public boolean login(@RequestBody UserDTO userDTO){
-        //新增或者更新
-        String username = userDTO.getUsername();
-        String password = userDTO.getPassword();
-        if(StrUtil.isBlank(username) || StrUtil.isBlank(password)){
-            //校验字符串是否是空
-            return  false;
-        }
-        return depService.login(userDTO);
-    }
+//    @PostMapping("/login")
+//    public boolean login(@RequestBody UserDTO userDTO){
+//        //新增或者更新
+//        String username = userDTO.getUsername();
+//        String password = userDTO.getPassword();
+//        if(StrUtil.isBlank(username) || StrUtil.isBlank(password)){
+//            //校验字符串是否是空
+//            return  false;
+//        }
+//        return depService.login(userDTO);
+//    }
 
     //增加
     @PostMapping

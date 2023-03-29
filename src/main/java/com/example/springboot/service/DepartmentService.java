@@ -10,5 +10,5 @@ import org.springframework.stereotype.Service;
 
 public interface DepartmentService extends IService<department> {
 
-    boolean login(UserDTO userDTO);
+    //boolean login(UserDTO userDTO);
 }
