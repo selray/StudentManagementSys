@@ -1,5 +1,6 @@
 package com.example.springboot.controller;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.server.HttpServerRequest;
 import cn.hutool.http.server.HttpServerResponse;
 import cn.hutool.poi.excel.ExcelReader;
@@ -8,15 +9,18 @@ import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.springboot.controller.dto.UserDTO;
 import com.example.springboot.entity.department;
 import com.example.springboot.mapper.departmentMapper;
 import com.example.springboot.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.HttpSessionRequiredException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import javax.servlet.ServletInputStream;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServlet;
@@ -31,14 +35,31 @@ import java.util.Map;
 @RequestMapping("/department")
 //初始url,要和下面拼接形成完整url
 public class DepartmentController {
-    @Autowired
+
+//    @Value("${files.upload.path}")
+//    private String filesUploadPath;
+
+    @Resource
     private DepartmentService depService;
+
+//登录
+    @PostMapping("/login")
+    public boolean login(@RequestBody UserDTO userDTO){
+        //新增或者更新
+        String username = userDTO.getUsername();
+        String password = userDTO.getPassword();
+        if(StrUtil.isBlank(username) || StrUtil.isBlank(password)){
+            //校验字符串是否是空
+            return  false;
+        }
+        return depService.login(userDTO);
+    }
 
     //增加
     @PostMapping
     public boolean save(@RequestBody department dep){
         //新增或者更新
-        return depService.saveDepartment(dep);
+        return depService.saveOrUpdate(dep);
     }
     //    查询所有数据
     @GetMapping

@@ -20,11 +20,11 @@ const routes = [
     name: 'about',
     component: () => import('../views/AboutView.vue')
   }
-  // , {
-  //   path:'/login',
-  //   name: 'Login',
-  //   component:() => import('../views/Login.vue')
-  // }
+  , {
+    path:'/login',
+    name: 'Login',
+    component:() => import('../views/Login.vue')
+  }
 ]
 
 const router = new VueRouter({
