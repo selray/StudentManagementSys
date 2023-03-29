@@ -9,13 +9,21 @@
       </el-breadcrumb>
   </div>
 
-  <el-dropdown style="width: 70px; cursor: pointer">
-    <span>王小虎</span><i class="el-icon-arrow-down" style="margin-left: 5px"></i>
-<!--    <i class="el-icon-setting" style="margin-right: 15px"></i>-->
-    <el-dropdown-menu slot="dropdown">
-      <el-dropdown-item>个人信息</el-dropdown-item>
+  <el-dropdown style="width: 150px; cursor: pointer">
+    <div style="display: inline-block">
+<!--      头像功能，15节内容-->
+<!--      <img :src="user.avatarUrl" alt="" style="width: 30px;border-radius: 50%;position: relative;top: 10px;right: 5px">-->
+      <span>{{ user.studentid }}</span><span>{{ user.name }}</span><i class="el-icon-arrow-down" style="margin-left: 5px"></i>
+<!--      这里的参数是后台.controller.dto中userdto的内容-->
+
+      <!--    <i class="el-icon-setting" style="margin-right: 15px"></i>-->
+    </div>
+      <el-dropdown-menu slot="dropdown">
       <el-dropdown-item>
-        <router-link to="/login" style="text-decoration: none">退出</router-link>
+        <router-link to="/manage/person">个人信息</router-link>
+      </el-dropdown-item>
+      <el-dropdown-item>
+        <span style="text-decoration: none" @click="logout">退出</span>
       </el-dropdown-item>
     </el-dropdown-menu>
   </el-dropdown>
@@ -35,6 +43,20 @@ export default {
       return this.$store.state.currentPathName;
     }
   },
+  data(){
+    return{
+      user: localStorage.getItem("loguserinfo") ? JSON.parse(localStorage.getItem("loguserinfo")):{}
+
+    }
+  },
+   methods: {
+    //退出登录，清除浏览器中的当前用户数据并且转化路由
+    logout(){
+      this.$router.push("/login")
+      localStorage.removeItem("loguserinfo")
+      this.$message.success("退出成功")
+     }
+   },
   watch:{  //监听路由变化
     currentPathName(newVal,oldVal){
       console.log(newVal)

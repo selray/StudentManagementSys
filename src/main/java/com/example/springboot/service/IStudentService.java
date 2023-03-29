@@ -13,5 +13,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2023-03-29
  */
 public interface IStudentService extends IService<Student> {
-    boolean login(UserDTO userDTO);
+    UserDTO login(UserDTO userDTO);
+    //因为需要注册的信息放入数据库中，所以返回实体对象
+    Student register(UserDTO userDTO);
 }

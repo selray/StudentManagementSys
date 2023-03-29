@@ -17,7 +17,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-  @ApiModel(value = "Student对象", description = "")
+  @ApiModel(value = "student", description = "")
 public class Student implements Serializable {
 
     private static final long serialVersionUID = 1L;

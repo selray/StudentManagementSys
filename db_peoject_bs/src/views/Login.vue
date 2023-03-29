@@ -11,7 +11,7 @@
           </el-form-item>
           <div style="margin: 10px 0;text-align: center">
             <el-button type="primary" size="small" autocomplete="off" @click="login">登录</el-button>
-            <el-button type="warning" size="small" autocomplete="off">注册</el-button>
+            <el-button type="warning" size="small" autocomplete="off" @click="$router.push('/register')">注册</el-button>
           </div>
         </el-form>
 
@@ -43,16 +43,15 @@ export default {
       this.$refs['userForm'].validate((valid) => {
         if (valid){ //表单校验合法
           this.request.post("/student/login",this.user).then(res =>{
-            if(!res){
-              this.$message.error("用户名或者密码错误")
+            if(res.code == '200'){   //判断是否是自己定义的异常处理
+              localStorage.setItem("loguserinfo",JSON.stringify(res.data)) //登录成功后，将用户信息存放在浏览器中，以便于其他操作
+              this.$router.push("/manage")
+              this.$message.success("登录成功")
             }
             else{
-              this.$router.push("/manage")
+              this.$message.error(res.msg)
             }
           })
-        } else{
-          console.log('error submit!!');
-          return false;
         }
       })
 
