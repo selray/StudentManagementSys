@@ -11,6 +11,7 @@ import com.example.springboot.exception.ServiceException;
 import com.example.springboot.mapper.StudentMapper;
 import com.example.springboot.service.IStudentService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.springboot.utils.TokenUtils;
 import org.springframework.stereotype.Service;
 
 /**
@@ -31,6 +32,9 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         Student one = getUserInfo(userDTO);
         if(one != null) {
             BeanUtil.copyProperties(one,userDTO,true);
+            //设置token
+            String token = TokenUtils.genToken(one.getStudentid().toString(),one.getPswd());
+            userDTO.setToken(token);
             return  userDTO;
         }else {
             throw new ServiceException(Constants.CODE_600,"用户名或密码错误");

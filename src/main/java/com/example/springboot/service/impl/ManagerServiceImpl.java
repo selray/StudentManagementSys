@@ -11,6 +11,7 @@ import com.example.springboot.exception.ServiceException;
 import com.example.springboot.mapper.ManagerMapper;
 import com.example.springboot.service.IManagerService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.springboot.utils.TokenUtils;
 import org.springframework.stereotype.Service;
 
 /**
@@ -31,6 +32,9 @@ public class ManagerServiceImpl extends ServiceImpl<ManagerMapper, Manager> impl
         Manager one = getUserInfo(userDTO);
         if(one != null) {
             BeanUtil.copyProperties(one,userDTO,true);
+            //设置token
+            String token = TokenUtils.genToken(one.getMnumber().toString(),one.getMpassword());
+            userDTO.setToken(token);
             return  userDTO;
         }else {
             throw new ServiceException(Constants.CODE_600,"用户名或密码错误");

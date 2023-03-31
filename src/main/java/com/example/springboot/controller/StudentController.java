@@ -43,6 +43,7 @@ public class StudentController {
             return  Result.error(Constants.CODE_400,"参数错误");
         }
         UserDTO dto= studentService.login(userDTO);
+        //String a = "";
         return Result.success(dto);
     }
     //注册接口

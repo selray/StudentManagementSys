@@ -11,8 +11,14 @@ const request = axios.create({
 // 比如统一加token，对请求参数统一加密
 request.interceptors.request.use(config => {
     config.headers['Content-Type'] = 'application/json;charset=utf-8';
+    //一定要用{}
+    let user = localStorage.getItem("loguserinfo") ? JSON.parse(localStorage.getItem("loguserinfo")):{}
+    if(user){
+        config.headers['token'] = user.token;  //设置请求头
+        //config.headers['token'] = '11111111111122222222';
+    }
 
-    // config.headers['token'] = user.token;  // 设置请求头
+    //利用token避免直接通过更改路由来进行越界访问
     return config
 }, error => {
     return Promise.reject(error)
