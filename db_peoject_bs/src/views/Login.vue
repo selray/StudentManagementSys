@@ -42,14 +42,37 @@ export default {
       //进行输入数据的校验，如果数据不合法就不会向后端发送请求
       this.$refs['userForm'].validate((valid) => {
         if (valid){ //表单校验合法
+
+          //第一次判断是否是学生登录
           this.request.post("/student/login",this.user).then(res =>{
-            if(res.code == '200'){   //判断是否是自己定义的异常处理
+            if(res.code == '200'){   //判断是否是自己定义的异常处理，这里是指数据库验证成功
               localStorage.setItem("loguserinfo",JSON.stringify(res.data)) //登录成功后，将用户信息存放在浏览器中，以便于其他操作
-              this.$router.push("/manage")
-              this.$message.success("登录成功")
+              this.$router.push("/manage") //跳转到学生登录界面
+              this.$message.success("学生登录成功")
             }
-            else{
-              this.$message.error(res.msg)
+            else{ //验证同学身份失败，转而验证老师
+              //this.$message.error(res.msg)
+              this.request.post("/teacher/login",this.user).then(res =>{
+                if(res.code == '200'){   //判断是否是自己定义的异常处理，这里是指数据库验证成功
+                  localStorage.setItem("loguserinfo",JSON.stringify(res.data)) //登录成功后，将用户信息存放在浏览器中，以便于其他操作
+                  this.$router.push("/manage")  //跳转到老师登录界面
+                  this.$message.success("老师登录成功")
+                }
+                else{ //验证老师身份失败，转而验证管理员
+                  //this.$message.error(res.msg)
+                  this.request.post("/manager/login",this.user).then(res =>{
+                    if(res.code == '200'){   //判断是否是自己定义的异常处理，这里是指数据库验证成功
+                      localStorage.setItem("loguserinfo",JSON.stringify(res.data)) //登录成功后，将用户信息存放在浏览器中，以便于其他操作
+                      this.$router.push("/manage") //跳转到管理员登录界面
+                      this.$message.success("管理员登录成功")
+                    }
+                    else{ //验证失败
+                      this.$message.error(res.msg)
+
+                    }
+                  })
+                }
+              })
             }
           })
         }
