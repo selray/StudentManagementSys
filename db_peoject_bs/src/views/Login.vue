@@ -68,7 +68,7 @@ export default {
                     }
                     else{ //验证失败
                       this.$message.error(res.msg)
-
+                      //this.$message.success("用户名或密码错误")
                     }
                   })
                 }
