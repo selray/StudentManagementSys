@@ -31,10 +31,10 @@ public class JwtInterceptor implements HandlerInterceptor {
     //拦截器
     @Autowired
     private IStudentService studentService;
-//    @Autowired
-//    private ITeacherService teacherService;
-//    @Autowired
-//    private IManagerService managerService;
+    @Autowired
+    private ITeacherService teacherService;
+    @Autowired
+    private IManagerService managerService;
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler){
         String token = request.getHeader("token");
@@ -58,20 +58,39 @@ public class JwtInterceptor implements HandlerInterceptor {
         }
         // 根据token中的userID 查询数据库
         Student student = studentService.getById(userId);
-//        Teacher teacher = teacherService.getById(userId);
-//        Manager manager = managerService.getById(userId);
+        Teacher teacher = teacherService.getById(userId);
+        Manager manager = managerService.getById(userId);
 
-//        if(student == null&&teacher == null&&manager == null){
-//            throw new ServiceException(Constants.CODE_401,"用户不存在，请重新登录");
-//        }
-
-        //用户密码加签验证token
-        JWTVerifier jwtVerifier = JWT.require(Algorithm.HMAC256(student.getPswd())).build();
-        try{
-            jwtVerifier.verify(token); //验证token
-        } catch (JWTVerificationException e){
-            throw new ServiceException(Constants.CODE_401,"token验证失败，请重新登录");
+        if(student == null&&teacher == null&&manager == null){
+            throw new ServiceException(Constants.CODE_401,"用户不存在，请重新登录");
         }
+        if (student!=null){
+            JWTVerifier jwtVerifier1 = JWT.require(Algorithm.HMAC256(student.getPswd())).build();
+            try{
+                jwtVerifier1.verify(token); //验证token
+            } catch (JWTVerificationException e1){
+
+                throw new ServiceException(Constants.CODE_401,"token验证失败，请重新登录");
+            }
+        } else if (teacher != null) {
+            JWTVerifier jwtVerifier2 = JWT.require(Algorithm.HMAC256(teacher.getTpassword())).build();
+            try{
+                jwtVerifier2.verify(token); //验证token
+            } catch (JWTVerificationException e2){
+
+                throw new ServiceException(Constants.CODE_401,"token验证失败，请重新登录");
+            }
+        }else if (manager != null){
+            JWTVerifier jwtVerifier3 = JWT.require(Algorithm.HMAC256(manager.getMpassword())).build();
+            try{
+                jwtVerifier3.verify(token); //验证token
+            } catch (JWTVerificationException e3){
+                throw new ServiceException(Constants.CODE_401,"token验证失败，请重新登录");
+            }
+        }
+        //用户密码加签验证token
+
+
         return true;
     }
 

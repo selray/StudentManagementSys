@@ -9,10 +9,10 @@
       </el-breadcrumb>
   </div>
 
-  <el-dropdown style="width: 150px; cursor: pointer">
+  <el-dropdown style="width: 200px; cursor: pointer;text-align: right">
     <div style="display: inline-block">
 <!--      头像功能，15节内容-->
-<!--      <img :src="user.avatarUrl" alt="" style="width: 30px;border-radius: 50%;position: relative;top: 10px;right: 5px">-->
+      <img :src="user.avatarurl" alt="" style="width: 30px;border-radius: 50%;position: relative;top: 10px;right: 5px">
       <span>{{ user.studentid }}</span><span>{{ user.name }}</span><i class="el-icon-arrow-down" style="margin-left: 5px"></i>
 <!--      这里的参数是后台.controller.dto中userdto的内容-->
 

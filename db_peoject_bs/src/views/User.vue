@@ -1,7 +1,5 @@
 <template>
   <div>
-
-
     <div style="margin: 10px 0">
       <el-input style="width: 200px" placeholder="请输入学院号" suffix-icon="el-icon-search" v-model="deptid"></el-input>
       <el-input style="width: 200px" placeholder="请输入学院名" class="ml-5" suffix-icon="el-icon-message" v-model="deptname"></el-input>
@@ -25,8 +23,6 @@
       >
         <el-button type="danger" slot="reference">批量删除<i class = "el-icon-remove-outline"></i></el-button>
       </el-popconfirm>
-
-
         <el-upload action="http://localhost:9090/department/import" :show-file-list="false" accept="xlsx" :on-success="handleExcelImportSuccess" style="display: inline-block">
       <el-button type="primary" class="ml-5">导入<i class = "el-icon-bottom"></i></el-button>
         </el-upload>
@@ -69,10 +65,8 @@
     </el-table>
     <div style="padding: 10px 0" >
       <el-pagination
-
           v-model:current-page="currentPage4"
           v-model:page-size="pageSize4"
-
           :current-page="pageNum"
           :page-sizes="[2, 5, 10, 20]"
           :page-size="pageSize"

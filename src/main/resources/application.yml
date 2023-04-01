@@ -22,4 +22,8 @@ mybatis-plus:
     configuration:
         log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
+files:
+    upload:
+        path: C:\Users\yijin\Desktop\db_project\database_project\files\
+
 

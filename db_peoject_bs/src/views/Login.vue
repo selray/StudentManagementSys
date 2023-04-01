@@ -54,7 +54,7 @@ export default {
               //this.$message.error(res.msg)
               this.request.post("/teacher/login",this.user).then(res =>{
                 if(res.code == '200'){   //判断是否是自己定义的异常处理，这里是指数据库验证成功
-                  //localStorage.setItem("loguserinfo",JSON.stringify(res.data)) //登录成功后，将用户信息存放在浏览器中，以便于其他操作
+                  localStorage.setItem("loguserinfo",JSON.stringify(res.data)) //登录成功后，将用户信息存放在浏览器中，以便于其他操作
                   this.$router.push("/manage")  //跳转到老师登录界面
                   this.$message.success("老师登录成功")
                 }
@@ -62,7 +62,7 @@ export default {
                   //this.$message.error(res.msg)
                   this.request.post("/manager/login",this.user).then(res =>{
                     if(res.code == '200'){   //判断是否是自己定义的异常处理，这里是指数据库验证成功
-                      //localStorage.setItem("loguserinfo",JSON.stringify(res.data)) //登录成功后，将用户信息存放在浏览器中，以便于其他操作
+                      localStorage.setItem("loguserinfo",JSON.stringify(res.data)) //登录成功后，将用户信息存放在浏览器中，以便于其他操作
                       this.$router.push("/manage") //跳转到管理员登录界面
                       this.$message.success("管理员登录成功")
                     }

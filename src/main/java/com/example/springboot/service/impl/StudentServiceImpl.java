@@ -39,9 +39,6 @@ public class StudentServiceImpl extends ServiceImpl<StudentMapper, Student> impl
         }else {
             throw new ServiceException(Constants.CODE_600,"用户名或密码错误");
         }
-
-
-
     }
 
 

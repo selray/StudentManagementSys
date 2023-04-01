@@ -1,4 +1,5 @@
 import axios from 'axios'
+import ElementUI from "element-ui";
 
 //通过axios实现后端数据传输到前端的功能
 const request = axios.create({
@@ -36,6 +37,13 @@ request.interceptors.response.use(
         // 兼容服务端返回的字符串数据
         if (typeof res === 'string') {
             res = res ? JSON.parse(res) : res
+        }
+        //当权限验证不同过的时候，给出提示
+        if (res.code == '401'){
+            ElementUI.Message({
+                message:res.msg(),
+                type:'error'
+            })
         }
         return res;
     },

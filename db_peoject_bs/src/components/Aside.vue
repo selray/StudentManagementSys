@@ -28,6 +28,11 @@
           <i class="el-icon-s-custom"></i>
           <span slot="title">用户管理</span>
       </el-menu-item>
+<!--    后面针对其他角色需要更改路由  -->
+      <el-menu-item index="/manage/file">
+        <i class="el-icon-document"></i>
+        <span slot="title">文件管理</span>
+      </el-menu-item>
     </el-submenu>
 <!--    <el-submenu index="3">-->
 <!--      <template slot="title"><i class="el-icon-setting"></i>-->

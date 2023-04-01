@@ -47,8 +47,10 @@ public class Student implements Serializable {
     private String status;
 
     private String logn;
+    private String avatarurl;
 
     private String pswd;
+
 
 
 }

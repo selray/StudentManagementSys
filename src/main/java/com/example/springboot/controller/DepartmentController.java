@@ -10,9 +10,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.springboot.controller.dto.UserDTO;
+import com.example.springboot.entity.Student;
 import com.example.springboot.entity.department;
 import com.example.springboot.mapper.departmentMapper;
 import com.example.springboot.service.DepartmentService;
+import com.example.springboot.utils.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
@@ -119,6 +121,10 @@ public class DepartmentController {
         }
         //倒序
         //queryWrapper.orderByDesc("id");
+
+        //测试利用token后台获取用户信息,
+        Student currentUser = TokenUtils.getCurrentUser();
+        //System.out.println("测试获取当前用户信息----------------------"+currentUser.getNativeplace());
 
 
         return depService.page(page,queryWrapper);
