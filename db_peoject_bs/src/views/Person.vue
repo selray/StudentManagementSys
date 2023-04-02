@@ -72,11 +72,11 @@ export default {
 
 
               //更新浏览器存储信息
-              // this.getUser().then(res =>{
-              //   user.token  = JSON.parse(localStorage.getItem("loguserinfo")).token
-              //   //localStorage.removeItem("loguserinfo")
-              //   localStorage.setItem("loguserinfo",JSON.stringify(user))
-              // })
+              this.getUser().then(res =>{
+                res.token  = JSON.parse(localStorage.getItem("loguserinfo")).token
+                //localStorage.removeItem("loguserinfo")
+                localStorage.setItem("loguserinfo",JSON.stringify(user))
+              })
                 }else {
               this.$message.error("保存失败")
             }
