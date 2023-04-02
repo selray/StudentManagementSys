@@ -4,7 +4,7 @@
     <span :class="collapseBtnClass" style="cursor: pointer;  font-size: 18px;" @click="collapse"></span>
 
       <el-breadcrumb separator="/" style="display: inline-block; margin-left: 10px">
-        <el-breadcrumb-item :to="'/'">首页</el-breadcrumb-item>
+        <el-breadcrumb-item :to="'/manage/home'">首页</el-breadcrumb-item>
         <el-breadcrumb-item>{{currentPathName}}</el-breadcrumb-item>
       </el-breadcrumb>
   </div>
@@ -20,7 +20,7 @@
     </div>
       <el-dropdown-menu slot="dropdown">
       <el-dropdown-item>
-        <router-link to="/manage/person">个人信息</router-link>
+        <router-link to="/manage/person" >个人信息</router-link>
       </el-dropdown-item>
       <el-dropdown-item>
         <span style="text-decoration: none" @click="logout">退出</span>
@@ -36,6 +36,7 @@ export default {
   props:{
     collapseBtnClass: String,
     collapse: Boolean,
+    user: Object,
 
   },
   computed:{
@@ -43,25 +44,35 @@ export default {
       return this.$store.state.currentPathName;
     }
   },
-  data(){
-    return{
-      user: localStorage.getItem("loguserinfo") ? JSON.parse(localStorage.getItem("loguserinfo")):{}
-
+  watch:{  //监听路由变化
+    currentPathName(newVal,oldVal){
+      console.log(newVal)
     }
   },
+  data(){
+    return{
+      // user: localStorage.getItem("loguserinfo") ? JSON.parse(localStorage.getItem("loguserinfo")):{}
+    }
+  },
+
    methods: {
     //退出登录，清除浏览器中的当前用户数据并且转化路由
     logout(){
       this.$router.push("/login")
       localStorage.removeItem("loguserinfo")
       this.$message.success("退出成功")
-     }
+     },
+     // reload(){
+     //   this.$message.success("移出前："+ user.avatarurl)
+     //   localStorage.removeItem("loguserinfo")
+     //   this.$message.warning("更新后："+ user.avatarurl)
+     //   localStorage.getItem("loguserinfo")
+     // },
    },
-  watch:{  //监听路由变化
-    currentPathName(newVal,oldVal){
-      console.log(newVal)
-    }
-  },
+
+
+
+
 
 }
 </script>

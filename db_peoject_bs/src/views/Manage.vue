@@ -7,12 +7,13 @@
 
     <el-container>
       <el-header style="border-bottom: 1px solid #ccc;">
-        <Header :collapseBtnClass="collapseBtnClass" :collapse="isCollapse"></Header>
+        <Header :collapseBtnClass="collapseBtnClass" :collapse="isCollapse" :user="user"></Header>
       </el-header>
 
       <el-main>
 <!--        //表示当前页面的子路由会在rooter-view中展示-->
-        <router-view />
+<!--        通过这个刷新函数来实现，header头像中的及时刷新-->
+        <router-view @refreshUser="getUser"/>
       </el-main>
     </el-container>
   </el-container>
@@ -34,13 +35,18 @@ export default {
       collapseBtnClass: 'el-icon-s-fold',
       isCollapse: false,
       sideWidth: 200,
-      logoTextShow: true
+      logoTextShow: true,
+      user: {}
+
     }
   },
-
   components:{
     Aside,
     Header
+  },
+  created() {
+    //从后台获取新数据
+    this.getUser()
   },
   methods: {
     collapse(){ //点击收缩按钮触发
@@ -54,6 +60,14 @@ export default {
         this.collapseBtnClass = 'el-icon-s-fold'
         this.logoTextShow = true
       }
+    },
+    getUser(){
+      //从后台获取数据
+      let studentid = localStorage.getItem("loguserinfo")?JSON.parse(localStorage.getItem("loguserinfo")).studentid:""
+      this.request.get("/student/studentid/" + studentid).then(res =>{
+      //重新复制后台的最新数据
+        this.user = res.data
+      })
     }
 
   }

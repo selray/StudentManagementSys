@@ -62,24 +62,30 @@ export default {
     },
     save(){
       //发送数据到后端
-      this.$message.success("保存信息："+this.form.avatarUrl)
+      //this.$message.success("保存信息："+this.form.avatarUrl)
       this.request.post("/student",this.form).then(res => {
             if(res){
               this.$message.success("保存成功")
+              //触发父级更新user的方法
+              this.$emit("refreshUser")
+              //保存之后，触发manage的父级，通过父级中的功能来实现更新以及右上角头像的更新
+
 
               //更新浏览器存储信息
-              this.getUser().then(res =>{
-                user.token  = JSON.parse(localStorage.getItem("loguserinfo")).token
-                localStorage.setItem("loguserinfo",JSON.stringify(user))
-              })
+              // this.getUser().then(res =>{
+              //   user.token  = JSON.parse(localStorage.getItem("loguserinfo")).token
+              //   //localStorage.removeItem("loguserinfo")
+              //   localStorage.setItem("loguserinfo",JSON.stringify(user))
+              // })
                 }else {
               this.$message.error("保存失败")
             }
           })
     },
     handleAvatarSuccess(res){
-      this.form.avatarUrl = res
-      this.$message.success("路径"+this.form.avatarUrl)
+      this.form.avatarurl = res
+      //this.$message.success("路径"+this.form.avatarUrl)
+      //this.$message.success("路径"+res)
     }
   }
 }

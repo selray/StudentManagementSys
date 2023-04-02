@@ -11,4 +11,5 @@ public class UserDTO {
     private String studentid;
     private String name;
     private String token;
+    private String avatarurl;
 }

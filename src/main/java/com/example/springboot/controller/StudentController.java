@@ -63,7 +63,7 @@ public class StudentController {
     @PostMapping
     public boolean save(@RequestBody Student student){
         //新增或者更新
-        System.out.println("测试传入student的数据=================="+student.getName()+"  "+student.getAvatarurl());
+        //System.out.println("测试传入student的数据=================="+student.getName()+"  "+student.getAvatarurl());
         return studentService.saveOrUpdate(student);
     }
 
