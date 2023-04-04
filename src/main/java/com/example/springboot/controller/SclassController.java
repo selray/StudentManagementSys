@@ -4,8 +4,8 @@ import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.example.springboot.entity.Lesson;
 import com.example.springboot.entity.Student;
+import com.example.springboot.entity.department;
 import com.example.springboot.utils.TokenUtils;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
@@ -69,15 +69,22 @@ public class SclassController {
     }
 
     //分页查询
+//    @GetMapping("/page")
+//    public Page<Sclass> findPage(@RequestParam Interger pageNum,
+//        @RequestParam Interger pageSize){
+//        QueryWrapper<department> queryWrapper = new QueryWrapper<>();
+//        //queryWrapper.orderByDesc("id");
+//        return sclassService.page(new Page<>(pageNum,pageSize));
+//    }
     @GetMapping("/page")  //接口路径,多条件查询
     public IPage<Sclass> findPage(@RequestParam Integer pageNum,
-                                  @RequestParam Integer pageSize,
-                                  @RequestParam(defaultValue = "") String tnumber,
-                                  @RequestParam(defaultValue = "") String lnumber,
-                                  @RequestParam(defaultValue = "") String semester,
-                                  @RequestParam(defaultValue = "") String lessontime,
-                                  @RequestParam(defaultValue = "") String classroom,
-                                  @RequestParam(defaultValue = "") String maxsize){
+                                      @RequestParam Integer pageSize,
+                                      @RequestParam(defaultValue = "") String tnumber,
+                                      @RequestParam(defaultValue = "") String lnumber,
+                                      @RequestParam(defaultValue = "") String semester,
+                                      @RequestParam(defaultValue = "") String lessontime,
+                                      @RequestParam(defaultValue = "") String classroom,
+                                      @RequestParam(defaultValue = "") String maxsize){
         IPage<Sclass> page = new Page<>(pageNum,pageSize);
         QueryWrapper<Sclass> queryWrapper = new QueryWrapper<>();
         if(!"".equals(tnumber)){
@@ -102,13 +109,16 @@ public class SclassController {
         //queryWrapper.orderByDesc("id");
 
         //测试利用token后台获取用户信息,
-        //Student currentUser = TokenUtils.getCurrentUser();
+        Student currentUser = TokenUtils.getCurrentUser();
         //System.out.println("测试获取当前用户信息----------------------"+currentUser.getNativeplace());
 
 
         return sclassService.page(page,queryWrapper);
     }
 
+
+
+    //    导出接口
     @GetMapping("/export")
     public void export(HttpServletResponse response) throws Exception{
         List<Sclass> list = sclassService.list();
@@ -121,13 +131,13 @@ public class SclassController {
 //        writer.addHeaderAlias("deptname","学院名称");
 //        writer.addHeaderAlias("address","学院地址");
 //        writer.addHeaderAlias("phonecode","学院号");
-        //  System.out.println("测试获取当前用户信息----------------------");
+
         //一次性写出list内的对象到excel，使用默认样式，强制输出标题
         writer.write(list,true);
 
         //设置浏览器响应的格式
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");
-        String fileName= URLEncoder.encode("全部课程列表","UTF-8");
+        String fileName= URLEncoder.encode("学院表格信息","UTF-8");
         //输出文件名称
         response.setHeader("Content-Disposition","attachment;filename="+fileName+".xlsx");
 
@@ -136,5 +146,8 @@ public class SclassController {
         out.close();
         writer.close();
     }
+
 }
+
+
 

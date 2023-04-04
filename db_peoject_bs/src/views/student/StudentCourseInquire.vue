@@ -2,7 +2,7 @@
   <div>
     <div style="margin: 10px 0">
       <el-input style="width: 200px" placeholder="请输入课程号" suffix-icon="el-icon-search" v-model="lnumber"></el-input>
-      <el-input style="width: 200px" placeholder="请输入教师号" class="ml-5" suffix-icon="el-icon-message" v-model="tnumber"></el-input>
+      <el-input style="width: 200px" placeholder="请输入老师号" class="ml-5" suffix-icon="el-icon-message" v-model="tnumber"></el-input>
 <!--      <el-input style="width: 200px" placeholder="请输入地址" class="ml-5" suffix-icon="el-icon-position" v-model="lcredit"></el-input>-->
 <!--      <el-input style="width: 200px" placeholder="请输入开课学院号" class="ml-5" suffix-icon="el-icon-position" v-model="lcollege"></el-input>-->
       <el-button class="ml-5" type="primary" @click="load">搜索</el-button>
@@ -34,19 +34,19 @@
       <el-table-column type="selection" width="55" />
 
 
-      <el-table-column prop="semester" label="学期" width="200">
+      <el-table-column prop="tnumber" label="老师号" width="200">
       </el-table-column>
       <el-table-column prop="lnumber" label="课程号" width="300">
       </el-table-column>
+      <el-table-column prop="semester" label="学期">
+      </el-table-column>
       <el-table-column prop="lessontime" label="时间">
       </el-table-column>
-      <el-table-column prop="tnumber" label="教师号">
-      </el-table-column>
-      <el-table-column prop="classroom" label="教室">
+      <el-table-column prop="classroom" label="教师">
       </el-table-column>
       <el-table-column prop="maxsize" label="最大人数">
       </el-table-column>
-      <el-table-column prop="maxsize" label="已选人数">
+      <el-table-column prop="currentsize" label="当前人数">
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
@@ -87,30 +87,30 @@
 
     </div>
     <!--        “新建”弹窗-->
-    <el-dialog title="学院信息" :visible.sync="dialogFormVisible" width="30%" >
-      <el-form label-width="80px" size="small">
-        <el-form-item label="课程号">
-          <el-input v-model="form.lnumber" autocomplete="off" />
-        </el-form-item>
-        <el-form-item label="课程名称">
-          <el-input v-model="form.lname" autocomplete="off" />
-        </el-form-item>
-        <el-form-item label="学分">
-          <el-input v-model="form.lcredit" autocomplete="off" />
-        </el-form-item>
-        <el-form-item label="开设学院">
-          <el-input v-model="form.lcollege" autocomplete="off" />
-        </el-form-item>
-      </el-form>
-      <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取消</el-button>
-        <el-button type="primary" @click="save">
-          确认
-        </el-button>
-      </span>
-      </template>
-    </el-dialog>
+<!--    <el-dialog title="学院信息" :visible.sync="dialogFormVisible" width="30%" >-->
+<!--      <el-form label-width="80px" size="small">-->
+<!--        <el-form-item label="课程号">-->
+<!--          <el-input v-model="form.lnumber" autocomplete="off" />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="课程名称">-->
+<!--          <el-input v-model="form.lname" autocomplete="off" />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="学分">-->
+<!--          <el-input v-model="form.lcredit" autocomplete="off" />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="开设学院">-->
+<!--          <el-input v-model="form.lcollege" autocomplete="off" />-->
+<!--        </el-form-item>-->
+<!--      </el-form>-->
+<!--      <template #footer>-->
+<!--      <span class="dialog-footer">-->
+<!--        <el-button @click="dialogFormVisible = false">取消</el-button>-->
+<!--        <el-button type="primary" @click="save">-->
+<!--          确认-->
+<!--        </el-button>-->
+<!--      </span>-->
+<!--      </template>-->
+<!--    </el-dialog>-->
   </div>
 </template>
 
@@ -125,11 +125,12 @@ export default {
       pageSize: 10,
 
       tnumber: "",
-      lnumber:"",
-      semester:"",
+      lnumber: "",
+      semester: "",
       lessontime: "",
       classroom: "",
-      maxsize:"",
+      maxsize: "",
+      currentsize:"",
       dialogFormVisible: false,
       multipleSelection: [],
       form: {},
@@ -150,13 +151,11 @@ export default {
         params:{
           pageNum: this.pageNum,
           pageSize: this.pageSize,
-          lnumber: this.lnumber,
           tnumber: this.tnumber,
           semester: this.semester,
           lessontime: this.lessontime,
           classroom: this.classroom,
-          maxsize: this.maxsize
-
+          maxsize:this.maxsize,
         }
       })
           .then(res => {
@@ -215,10 +214,12 @@ export default {
     //   })
     // },
     reset(){
+      this.tnumber = ""
       this.lnumber = ""
-      this.lname = ""
-      this.lcredit = ""
-      this.lcollege = ""
+      this.semester = ""
+      this.lessontime = ""
+      this.classroom = ""
+      this.maxsize = ""
       this.load()
     },
     handleSizeChange(pageSize){
