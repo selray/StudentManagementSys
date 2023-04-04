@@ -10,7 +10,7 @@ import java.util.Collections;
 //mp代码生成器
 public class CodeGenerator {
     public static void main(String[] args) {
-       //generate();
+       generate();
         //去掉注释来运行
     }
 
@@ -31,7 +31,7 @@ public class CodeGenerator {
                     builder.entityBuilder().enableLombok();
                     builder.controllerBuilder().enableHyphenStyle() //开启驼峰转链字符
                                     .enableRestStyle();         //开启生成RestController控制器
-                    builder.addInclude("lesson") // 设置需要生成的表名
+                    builder.addInclude("sclass") // 设置需要生成的表名
                             .addTablePrefix("t_", "c_"); // 设置过滤表前缀
                 })
                 //.templateEngine(new FreemarkerTemplateEngine()) // 使用Freemarker引擎模板，默认的是Velocity引擎模板

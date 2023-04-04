@@ -2,9 +2,9 @@
   <div>
     <div style="margin: 10px 0">
       <el-input style="width: 200px" placeholder="请输入课程号" suffix-icon="el-icon-search" v-model="lnumber"></el-input>
-      <el-input style="width: 200px" placeholder="请输入课程名称" class="ml-5" suffix-icon="el-icon-message" v-model="lname"></el-input>
+      <el-input style="width: 200px" placeholder="请输入教师号" class="ml-5" suffix-icon="el-icon-message" v-model="tnumber"></el-input>
 <!--      <el-input style="width: 200px" placeholder="请输入地址" class="ml-5" suffix-icon="el-icon-position" v-model="lcredit"></el-input>-->
-      <el-input style="width: 200px" placeholder="请输入开课学院号" class="ml-5" suffix-icon="el-icon-position" v-model="lcollege"></el-input>
+<!--      <el-input style="width: 200px" placeholder="请输入开课学院号" class="ml-5" suffix-icon="el-icon-position" v-model="lcollege"></el-input>-->
       <el-button class="ml-5" type="primary" @click="load">搜索</el-button>
       <el-button type="warning" @click="reset">重置</el-button>
     </div>
@@ -34,13 +34,19 @@
       <el-table-column type="selection" width="55" />
 
 
-      <el-table-column prop="lnumber" label="课程号" width="200">
+      <el-table-column prop="semester" label="学期" width="200">
       </el-table-column>
-      <el-table-column prop="lname" label="课程名称" width="300">
+      <el-table-column prop="lnumber" label="课程号" width="300">
       </el-table-column>
-      <el-table-column prop="lcredit" label="学分">
+      <el-table-column prop="lessontime" label="时间">
       </el-table-column>
-      <el-table-column prop="lcollege" label="开设学院">
+      <el-table-column prop="tnumber" label="教师号">
+      </el-table-column>
+      <el-table-column prop="classroom" label="教室">
+      </el-table-column>
+      <el-table-column prop="maxsize" label="最大人数">
+      </el-table-column>
+      <el-table-column prop="maxsize" label="已选人数">
       </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="scope">
@@ -118,10 +124,12 @@ export default {
       pageNum: 1,
       pageSize: 10,
 
-      lnumber: "",
-      lname: "",
-      lcredit: "",
-      lcollege: "",
+      tnumber: "",
+      lnumber:"",
+      semester:"",
+      lessontime: "",
+      classroom: "",
+      maxsize:"",
       dialogFormVisible: false,
       multipleSelection: [],
       form: {},
@@ -138,14 +146,17 @@ export default {
       //通过axios向后台请求参数
 
       //通过request.js中的baseurl已经将前面的http://localhost:9090部分省略了
-      this.request.get("/lesson/page",{
+      this.request.get("/sclass/page",{
         params:{
           pageNum: this.pageNum,
           pageSize: this.pageSize,
           lnumber: this.lnumber,
-          lname: this.lname,
-          lcredit: this.lcredit,
-          lcollege: this.lcollege
+          tnumber: this.tnumber,
+          semester: this.semester,
+          lessontime: this.lessontime,
+          classroom: this.classroom,
+          maxsize: this.maxsize
+
         }
       })
           .then(res => {
@@ -157,7 +168,7 @@ export default {
     },
     save(){
       //发送数据到后端
-      this.request.post("/lesson",this.form)
+      this.request.post("/sclass",this.form)
           .then(res => {
             if(res){
               this.$message.success("保存成功")
@@ -219,7 +230,7 @@ export default {
       this.load()
     },
     exp(){
-      window.open("http://localhost:9090/lesson/export")
+      window.open("http://localhost:9090/sclass/export")
     },
     handleExcelImportSuccess(){
       this.$message.success("文件上传成功！")
