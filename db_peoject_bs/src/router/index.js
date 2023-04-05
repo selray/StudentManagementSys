@@ -24,11 +24,13 @@ const routes = [
     component: () => import("../views/student/StudentManage.vue"),
     redirect: "/studentmanage/home",
     children:[
-      {path: 'selecourse', name: '首页' , component: () => import('../views/student/StudentSeleceCourse.vue')},
+      {path: 'selecourse', name: '选课' , component: () => import('../views/student/StudentSeleceCourse.vue')},
       {path: 'home', name: '用户管理' , component: () => import('../views/student/StudentHome.vue')},
       {path:'personinfo', name: '个人信息', component:() => import('../views/student/StudentPerson.vue')},
       {path:'file', name: '文件管理', component:() => import('../views/student/StudentFileManage.vue')},
-      {path:'courseinquire', name: '课程查询', component:() => import('../views/student/StudentCourseInquire.vue')}
+      {path:'courseinquire', name: '课程查询', component:() => import('../views/student/StudentCourseInquire.vue')},
+      {path:'cancelclass', name: '退课', component:() => import('../views/student/StudentCancelClass.vue')},
+      {path:'classtable', name: '课表查询', component:() => import('../views/student/StudentClassTable.vue')}
 
     ],
 

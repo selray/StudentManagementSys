@@ -99,7 +99,7 @@ public class DepartmentController {
 //    }
     //mybatis plus分页查询
     @GetMapping("/page")  //接口路径,多条件查询
-    public IPage<department > findPage(@RequestParam Integer pageNum,
+    public IPage<department> findPage(@RequestParam Integer pageNum,
                                         @RequestParam Integer pageSize,
                                        @RequestParam(defaultValue = "") String deptid,
                                         @RequestParam(defaultValue = "") String deptname,

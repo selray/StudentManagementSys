@@ -4,14 +4,17 @@ import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.springboot.entity.Lessonchoose;
 import com.example.springboot.entity.Student;
-import com.example.springboot.entity.department;
+import com.example.springboot.mapper.SclassMapper;
+import com.example.springboot.service.ILessonchooseService;
 import com.example.springboot.utils.TokenUtils;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
@@ -26,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
  * </p>
  *
  * @author sel
- * @since 2023-04-04
+ * @since 2023-04-05
  */
 @RestController
 @RequestMapping("/sclass")
@@ -35,6 +38,12 @@ public class SclassController {
 
     @Resource
     private ISclassService sclassService;
+    @Resource
+    private ILessonchooseService lessonchooseService;
+
+    @Resource
+    private SclassMapper sclassMapper;
+
 
     //新增或更新
     @PostMapping
@@ -68,14 +77,9 @@ public class SclassController {
         return sclassService.getById(id);
     }
 
+
+
     //分页查询
-//    @GetMapping("/page")
-//    public Page<Sclass> findPage(@RequestParam Interger pageNum,
-//        @RequestParam Interger pageSize){
-//        QueryWrapper<department> queryWrapper = new QueryWrapper<>();
-//        //queryWrapper.orderByDesc("id");
-//        return sclassService.page(new Page<>(pageNum,pageSize));
-//    }
     @GetMapping("/page")  //接口路径,多条件查询
     public IPage<Sclass> findPage(@RequestParam Integer pageNum,
                                       @RequestParam Integer pageSize,
@@ -109,14 +113,60 @@ public class SclassController {
         //queryWrapper.orderByDesc("id");
 
         //测试利用token后台获取用户信息,
-        Student currentUser = TokenUtils.getCurrentUser();
+       // Student currentUser = TokenUtils.getCurrentUser();
         //System.out.println("测试获取当前用户信息----------------------"+currentUser.getNativeplace());
 
 
         return sclassService.page(page,queryWrapper);
     }
+    @GetMapping("/tk/page")  //接口路径,多条件查询
+    public IPage<Sclass> findTKPage(@RequestParam Integer pageNum,
+                                  @RequestParam Integer pageSize,
+                                  @RequestParam(defaultValue = "") String tnumber,
+                                  @RequestParam(defaultValue = "") String lnumber,
+                                  @RequestParam(defaultValue = "") String semester,
+                                  @RequestParam(defaultValue = "") String lessontime,
+                                  @RequestParam(defaultValue = "") String classroom,
+                                  @RequestParam(defaultValue = "") String maxsize,
+                                  @RequestParam(defaultValue = "") String snumber){
+        IPage<Sclass> page = new Page<>(pageNum,pageSize);
 
+        //目的是要找到该学生到底选修了哪些课程，返回这些课程的信息
+        //现在lessonChoose表里面找到该学生到底选了哪些课程，将课程对应的tnumber,lnumber和semester找到
+        QueryWrapper<Lessonchoose> queryWrapper2 = new QueryWrapper<>();
+        if(!"".equals(snumber)){
+            queryWrapper2.eq("snumber",snumber);
+        }
+        List<Lessonchoose> lessonList = lessonchooseService.list(queryWrapper2);
+        List<Sclass> result = new ArrayList<>();
+        Sclass sclass;
+        //对list进行遍历
+        for (Lessonchoose o : lessonList) {
+            QueryWrapper<Sclass> queryWrapper = new QueryWrapper<>();
+                queryWrapper.like("tnumber",o.getTnumber());
+                queryWrapper.like("lnumber",o.getLnumber());
+                queryWrapper.like("semester",o.getSemester());
 
+            sclass = sclassMapper.selectOne(queryWrapper);
+            result.add(sclass);
+            //每次拼接一条记录
+        }
+        page = listToPage(result,pageNum,pageSize);
+        IPage<Sclass> page2 = page;
+        return page;
+    }
+
+    public static IPage listToPage(List list, int pageNum, int pageSize){
+        List pageList = new ArrayList<>();
+        int curIdx = pageNum > 1 ? (pageNum - 1) * pageSize : 0;
+        for (int i = 0; i < pageSize && curIdx + i < list.size(); i++) {
+            pageList.add(list.get(curIdx + i));
+        }
+        IPage page = new Page<>(pageNum, pageSize);
+        page.setRecords(pageList);
+        page.setTotal(list.size());
+        return page;
+    }
 
     //    导出接口
     @GetMapping("/export")
@@ -146,8 +196,5 @@ public class SclassController {
         out.close();
         writer.close();
     }
-
 }
-
-
 

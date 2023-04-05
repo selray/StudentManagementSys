@@ -29,11 +29,11 @@
         <span slot="title">选课</span>
       </el-menu-item>
       <!--    后面针对其他角色需要更改路由  -->
-      <el-menu-item index="/studentmanage/file">
+      <el-menu-item index="/studentmanage/cancelclass">
         <i class="el-icon-document"></i>
         <span slot="title">退课</span>
       </el-menu-item>
-      <el-menu-item index="/studentmanage/file">
+      <el-menu-item index="/studentmanage/classtable">
         <i class="el-icon-document"></i>
         <span slot="title">课表查询</span>
       </el-menu-item>

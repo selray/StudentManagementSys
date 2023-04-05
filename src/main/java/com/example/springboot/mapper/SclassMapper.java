@@ -9,7 +9,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * </p>
  *
  * @author sel
- * @since 2023-04-04
+ * @since 2023-04-05
  */
 public interface SclassMapper extends BaseMapper<Sclass> {
 

@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
  * </p>
  *
  * @author sel
- * @since 2023-04-04
+ * @since 2023-04-05
  */
 @Service
 public class SclassServiceImpl extends ServiceImpl<SclassMapper, Sclass> implements ISclassService {

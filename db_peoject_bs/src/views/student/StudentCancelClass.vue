@@ -1,33 +1,34 @@
 <template>
   <div>
-    <div style="margin: 10px 0">
-      <el-input style="width: 200px" placeholder="请输入课程号" suffix-icon="el-icon-search" v-model="lnumber"></el-input>
-      <el-input style="width: 200px" placeholder="请输入教师号" class="ml-5" suffix-icon="el-icon-message" v-model="tnumber"></el-input>
-<!--      <el-input style="width: 200px" placeholder="请输入地址" class="ml-5" suffix-icon="el-icon-position" v-model="lcredit"></el-input>-->
-<!--      <el-input style="width: 200px" placeholder="请输入开课学院号" class="ml-5" suffix-icon="el-icon-position" v-model="lcollege"></el-input>-->
-      <el-button class="ml-5" type="primary" @click="load">搜索</el-button>
-      <el-button type="warning" @click="reset">重置</el-button>
-    </div>
 
-    <div style="margin: 10px 0">
-<!--      <el-button type="primary" @click="handleAdd">新增<i class="el-icon-circle-plus-outline"></i></el-button>-->
-<!--      <el-popconfirm-->
-<!--          class="ml-5"-->
-<!--          confirm-button-text="确认"-->
-<!--          cancel-button-text="取消"-->
-<!--          :icon="InfoFilled"-->
-<!--          icon-color="#626AEF"-->
-<!--          title="是否批量删除?"-->
-<!--          @confirm="delBatch"-->
-<!--          @cancel="cancelEvent"-->
-<!--      >-->
-<!--        <el-button type="danger" slot="reference">批量删除<i class = "el-icon-remove-outline"></i></el-button>-->
-<!--      </el-popconfirm>-->
-<!--      <el-upload action="http://localhost:9090/department/import" :show-file-list="false" accept="xlsx" :on-success="handleExcelImportSuccess" style="display: inline-block">-->
-<!--        <el-button type="primary" class="ml-5">导入<i class = "el-icon-bottom"></i></el-button>-->
-<!--      </el-upload>-->
-      <el-button type="primary" @click="exp" class="ml-5">导出<i class = "el-icon-top"></i></el-button>
-    </div>
+<!--    <div style="margin: 10px 0">-->
+<!--      <el-input style="width: 200px" placeholder="请输入课程号" suffix-icon="el-icon-search" v-model="lnumber"></el-input>-->
+<!--      <el-input style="width: 200px" placeholder="请输入教师号" class="ml-5" suffix-icon="el-icon-message" v-model="tnumber"></el-input>-->
+<!--      &lt;!&ndash;      <el-input style="width: 200px" placeholder="请输入地址" class="ml-5" suffix-icon="el-icon-position" v-model="lcredit"></el-input>&ndash;&gt;-->
+<!--      &lt;!&ndash;      <el-input style="width: 200px" placeholder="请输入开课学院号" class="ml-5" suffix-icon="el-icon-position" v-model="lcollege"></el-input>&ndash;&gt;-->
+<!--      <el-button class="ml-5" type="primary" @click="load">搜索</el-button>-->
+<!--      <el-button type="warning" @click="reset">重置</el-button>-->
+<!--    </div>-->
+
+<!--    <div style="margin: 10px 0">-->
+      <!--      <el-button type="primary" @click="handleAdd">新增<i class="el-icon-circle-plus-outline"></i></el-button>-->
+      <!--      <el-popconfirm-->
+      <!--          class="ml-5"-->
+      <!--          confirm-button-text="确认"-->
+      <!--          cancel-button-text="取消"-->
+      <!--          :icon="InfoFilled"-->
+      <!--          icon-color="#626AEF"-->
+      <!--          title="是否批量删除?"-->
+      <!--          @confirm="delBatch"-->
+      <!--          @cancel="cancelEvent"-->
+      <!--      >-->
+      <!--        <el-button type="danger" slot="reference">批量删除<i class = "el-icon-remove-outline"></i></el-button>-->
+      <!--      </el-popconfirm>-->
+      <!--      <el-upload action="http://localhost:9090/department/import" :show-file-list="false" accept="xlsx" :on-success="handleExcelImportSuccess" style="display: inline-block">-->
+      <!--        <el-button type="primary" class="ml-5">导入<i class = "el-icon-bottom"></i></el-button>-->
+      <!--      </el-upload>-->
+<!--      <el-button type="primary" @click="exp" class="ml-5">导出<i class = "el-icon-top"></i></el-button>-->
+<!--    </div>-->
 
     <el-table :data="tableData" border stripe header-cell-class-name="headerBg" @selection-change="handleSelectionChange">
       <!--          多选框-->
@@ -48,26 +49,26 @@
       </el-table-column>
       <el-table-column prop="currentsize" label="当前人数">
       </el-table-column>
-<!--      <el-table-column label="操作" width="200">-->
-<!--        <template slot-scope="scope">-->
-<!--          <el-button type="success" @click="handleEdit(scope.row)">编辑<i class="el-icon-edit"></i></el-button>-->
-<!--          <el-popconfirm-->
-<!--              class="ml-5"-->
-<!--              confirm-button-text="确认"-->
-<!--              cancel-button-text="取消"-->
-<!--              :icon="InfoFilled"-->
-<!--              icon-color="#626AEF"-->
-<!--              title="是否删除?"-->
-<!--              @confirm="del(scope.row.deptid)"-->
-<!--              @cancel="cancelEvent"-->
-<!--          >-->
-<!--            <template #reference>-->
-<!--              <el-button type="danger">删除<i class="el-icon-remove-outline"></i></el-button>-->
-<!--            </template>-->
-<!--          </el-popconfirm>-->
+            <el-table-column label="操作" width="200">
+              <template slot-scope="scope">
+<!--                <el-button type="success" @click="handleEdit(scope.row)">编辑<i class="el-icon-edit"></i></el-button>-->
+                <el-popconfirm
+                    class="ml-5"
+                    confirm-button-text="确认"
+                    cancel-button-text="取消"
+                    :icon="InfoFilled"
+                    icon-color="#626AEF"
+                    title="是否退课?"
+                    @confirm="delCourse(scope.row.lnumber,scope.row.tnumber,scope.row.semester)"
+                    @cancel="cancelEvent"
+                >
+                  <template #reference>
+                    <el-button type="danger">退课<i class="el-icon-remove-outline"></i></el-button>
+                  </template>
+                </el-popconfirm>
 
-<!--        </template>-->
-<!--      </el-table-column>-->
+              </template>
+            </el-table-column>
     </el-table>
     <div style="padding: 10px 0" >
       <el-pagination
@@ -147,7 +148,7 @@ export default {
       //通过axios向后台请求参数
 
       //通过request.js中的baseurl已经将前面的http://localhost:9090部分省略了
-      this.request.get("/sclass/page",{
+      this.request.get("/sclass/tk/page",{
         params:{
           pageNum: this.pageNum,
           pageSize: this.pageSize,
@@ -156,10 +157,12 @@ export default {
           semester: this.semester,
           lessontime: this.lessontime,
           classroom: this.classroom,
-          maxsize: this.maxsize
+          maxsize: this.maxsize,
+          snumber: localStorage.getItem("loguserinfo") ? JSON.parse(localStorage.getItem("loguserinfo")).studentid:""
         }
       })
           .then(res => {
+            this.$message.success("加载成功")
             console.log(res)
             this.tableData = res.records
             this.total = res.total
@@ -176,6 +179,27 @@ export default {
               this.load()
             }else {
               this.$message.error("保存失败")
+            }
+          })
+    },
+    delCourse(lnumber,tnumber,semester){
+      //this.$message.success("==============退课点击事件：传入数据："+lnumber+"  "+tnumber+"  "+semester+"  "+JSON.parse(localStorage.getItem("loguserinfo")).studentid);
+      //发送数据到后端
+      this.request.get("/lessonchoose/tk",{
+        params: {
+          lnumber: lnumber,
+          tnumber: tnumber,
+          semester: semester,
+          snumber: localStorage.getItem("loguserinfo") ? JSON.parse(localStorage.getItem("loguserinfo")).studentid:""
+        }
+      })
+          .then(res => {
+            if(res){
+              this.$message.success("退课成功")
+              this.dialogFormVisible = false
+              this.load()
+            }else {
+              this.$message.error("退课失败")
             }
           })
     },

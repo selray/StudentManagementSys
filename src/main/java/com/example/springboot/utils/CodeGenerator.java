@@ -10,7 +10,7 @@ import java.util.Collections;
 //mp代码生成器
 public class CodeGenerator {
     public static void main(String[] args) {
-      // generate();
+    //  generate();
         //去掉注释来运行
     }
 
