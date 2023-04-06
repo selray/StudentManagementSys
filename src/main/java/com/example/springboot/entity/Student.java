@@ -42,7 +42,7 @@ public class Student implements Serializable {
 
     private String deptid;
 
-    private String sdept;
+//    private String sdept;
 
     private String status;
 
