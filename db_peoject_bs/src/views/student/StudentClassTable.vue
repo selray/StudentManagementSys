@@ -34,14 +34,24 @@
     <el-table :data="tableData" border stripe header-cell-class-name="headerBg" @selection-change="handleSelectionChange" :row-style="{height:'25px'}" :cell-style="{padding:'0'}">
       <!--          多选框-->
 
-
+      <el-table-column prop="id" label="编号" width="50">
+        <template slot-scope="scope">
+          <span>
+            {{ String.fromCharCode(65 + scope.$index)}}
+            </span>
+        </template>
+      </el-table-column>
       <el-table-column prop="lnumber" label="课程号" >
+      </el-table-column>
+      <el-table-column prop="classname" label="课程名" width="150">
+      </el-table-column>
+      <el-table-column prop="lcredit" label="学分" width="50">
       </el-table-column>
       <el-table-column prop="tnumber" label="老师号">
       </el-table-column>
       <el-table-column prop="semester" label="学期">
       </el-table-column>
-      <el-table-column prop="lessontime" label="时间" width="300px">
+      <el-table-column prop="lessontime" label="时间" width="200">
       </el-table-column>
       <el-table-column prop="classroom" label="教室">
       </el-table-column>
@@ -94,31 +104,14 @@ export default {
   },
   data(){
     return{
-      // characterArr : [
-      //   "一",
-      //   "二",
-      //   "三",
-      //   "四",
-      //   "五",
-      //   "六",
-      //   "七",
-      //   "八",
-      //   "九"
-      // ],
+
       ClassTable:[],
       ClassTimeTable:[],
-      tableData: [
-        {
-          firstCol: "一"
-        },
-        {
-          firstCol: "二"
-        }
-      ],
+      tableData: [],
       total: 0,
       pageNum: 1,
       pageSize: 10,
-
+      CourseTableDis:[[]],
       tnumber: "",
       lnumber: "",
       semester: "",
@@ -126,6 +119,9 @@ export default {
       classroom: "",
       maxsize: "",
       currentsize: "",
+      classname: "",
+      lcredit: "",
+      id: "",
       dialogFormVisible: false,
       multipleSelection: [],
       form: {},
@@ -158,57 +154,10 @@ export default {
           .then(res => {
             this.$message.success("加载成功")
             console.log(res)
+            // this.tableData
             this.tableData = res.records
-            this.ClassTable = [
-              {
-                firstCol:'一',
-                tabletime:'8:00-8:45'
-              },
-              {
-                firstCol: '二',
-                tabletime:'8:55-9:40'
-              },
-              {
-                firstCol:'三',
-                tabletime:'10:00-10:45'
-              },
-              {
-                firstCol: '四',
-                tabletime:'10:55-11:40'
-              },
-              {
-                firstCol:'五',
-                tabletime:'13:00-13:45'
-              },
-              {
-                firstCol: '六',
-                tabletime:'13:55-14:40'
-              },
-              {
-                firstCol:'七',
-                tabletime:'15:00-15:45'
-              },
-              {
-                firstCol: '八',
-                tabletime:'15:55-16:40'
-              },
-              {
-                firstCol:'九',
-                tabletime:'18:00-18:45'
-              },
-              {
-                firstCol: '十',
-                tabletime:'18:55-19:40'
-              },
-              {
-                firstCol:'十一',
-                tabletime:'20:00-20:45'
-              },
-              {
-                firstCol: '十二',
-                tabletime:'20:55-21:40'
-              },
-            ]
+            //this.$message.success("tabledata信息："+this.tableData.findIndex((role) => role.id === 0).lessontime)
+            this.FilledTable()
             this.total = res.total
           })
 
@@ -251,37 +200,73 @@ export default {
       this.dialogFormVisible = true
       this.form = {}
     },
-    // handleEdit(row){
-    //   this.form = row //将数据赋予弹窗
-    //   this.dialogFormVisible = true //显示弹窗
-    //
-    // },
-    // del(id){
-    //   this.request.delete("/lesson/" + id)
-    //       .then(res => {
-    //         if(res){
-    //           this.$message.success("删除成功")
-    //           this.load()
-    //         }else {
-    //           this.$message.error("删除失败")
-    //         }
-    //       })
-    // },
+
     handleSelectionChange(val){
       console.log(val)
       this.multipleSelection = val
     },
-    // delBatch(){
-    //   let ids = this.multipleSelection.map(v => v.lnumber)   //把一个对象的数组变成一个纯数组
-    //   this.request.post("/department/del/batch",ids).then(res => {
-    //     if(res){
-    //       this.$message.success("批量删除成功")
-    //       this.load()
-    //     }else {
-    //       this.$message.error("批量删除失败")
-    //     }
-    //   })
-    // },
+    FilledTable(){
+      this.CourseTableDis[12]= new Array();
+
+      // for(var i =1;i<=12;i++){
+      //   for(var j =1;j<=5;j++){ //判断星期几
+      //     //判断tabledata的数据
+      //     this.tableData.
+      //     this.CourseTableDis[x][i] = dataArray[i];
+      //   }
+      // } //判断第几节
+
+      this.ClassTable = [
+        {
+          firstCol:'一',
+          tabletime:'8:00-8:45',
+        },
+        {
+          firstCol: '二',
+          tabletime:'8:55-9:40'
+        },
+        {
+          firstCol:'三',
+          tabletime:'10:00-10:45'
+        },
+        {
+          firstCol: '四',
+          tabletime:'10:55-11:40'
+        },
+        {
+          firstCol:'五',
+          tabletime:'13:00-13:45'
+        },
+        {
+          firstCol: '六',
+          tabletime:'13:55-14:40'
+        },
+        {
+          firstCol:'七',
+          tabletime:'15:00-15:45'
+        },
+        {
+          firstCol: '八',
+          tabletime:'15:55-16:40'
+        },
+        {
+          firstCol:'九',
+          tabletime:'18:00-18:45'
+        },
+        {
+          firstCol: '十',
+          tabletime:'18:55-19:40'
+        },
+        {
+          firstCol:'十一',
+          tabletime:'20:00-20:45'
+        },
+        {
+          firstCol: '十二',
+          tabletime:'20:55-21:40'
+        },
+      ]
+    },
     reset(){
       this.lnumber = ""
       this.lname = ""

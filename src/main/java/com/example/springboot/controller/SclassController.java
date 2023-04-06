@@ -4,8 +4,8 @@ import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.example.springboot.entity.Lessonchoose;
-import com.example.springboot.entity.Student;
+import com.example.springboot.entity.*;
+import com.example.springboot.mapper.LessonMapper;
 import com.example.springboot.mapper.SclassMapper;
 import com.example.springboot.service.ILessonchooseService;
 import com.example.springboot.utils.TokenUtils;
@@ -19,7 +19,6 @@ import java.util.List;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 import com.example.springboot.service.ISclassService;
-import com.example.springboot.entity.Sclass;
 
 import org.springframework.web.bind.annotation.RestController;
 
@@ -44,6 +43,9 @@ public class SclassController {
     @Resource
     private SclassMapper sclassMapper;
 
+
+    @Resource
+    private LessonMapper lessonMapper;
 
     //新增或更新
     @PostMapping
@@ -109,15 +111,34 @@ public class SclassController {
         if(!"".equals(maxsize)){
             queryWrapper.like("maxsize",maxsize);
         }
-        //倒序
-        //queryWrapper.orderByDesc("id");
+        List<SclassAndName> result = new ArrayList<>();
+        //现在Sclass中查找合适的数据
+        List<Sclass> sclasses = sclassService.list(queryWrapper);
+        Lesson lesson;
+        //随后，遍历查找到的数据，针对每一行，也就是每一个课程找到课程的课程名称和课程学分
+        for (Sclass o : sclasses) {
+            QueryWrapper<Lesson> lessonQueryWrapper = new QueryWrapper<>();
+            lessonQueryWrapper.eq("lnumber",o.getLnumber());
 
-        //测试利用token后台获取用户信息,
-       // Student currentUser = TokenUtils.getCurrentUser();
-        //System.out.println("测试获取当前用户信息----------------------"+currentUser.getNativeplace());
+            lesson = lessonMapper.selectOne(lessonQueryWrapper);
+            //找到某一个课程对应的课程名称以及课程学分
+            //接下来，进行整合
 
 
-        return sclassService.page(page,queryWrapper);
+//            QueryWrapper<Lesson> lessonQueryWrapper = new QueryWrapper<>();
+//            lessonQueryWrapper.eq("lnumber",o.getLnumber());
+//            lesson = lessonMapper.selectOne(lessonQueryWrapper);
+            //找出对应课程中的课程名称以及学分
+            //构造实体，以便于返回数据
+            SclassAndName sclassAndClassName = new SclassAndName(o,lesson.getLname(),lesson.getLcredit());
+
+            result.add(sclassAndClassName);
+            //每次拼接一条记录
+        }
+        page = listToPage(result,pageNum,pageSize);
+        IPage<Sclass> page2 = page;
+
+        return page;
     }
     @GetMapping("/tk/page")  //接口路径,多条件查询
     public IPage<Sclass> findTKPage(@RequestParam Integer pageNum,
@@ -138,17 +159,28 @@ public class SclassController {
             queryWrapper2.eq("snumber",snumber);
         }
         List<Lessonchoose> lessonList = lessonchooseService.list(queryWrapper2);
-        List<Sclass> result = new ArrayList<>();
+        List<SclassAndName> result = new ArrayList<>();
+
         Sclass sclass;
+        Lesson lesson;
+        String classname = "默认";
         //对list进行遍历
         for (Lessonchoose o : lessonList) {
             QueryWrapper<Sclass> queryWrapper = new QueryWrapper<>();
-                queryWrapper.like("tnumber",o.getTnumber());
-                queryWrapper.like("lnumber",o.getLnumber());
-                queryWrapper.like("semester",o.getSemester());
+                queryWrapper.eq("tnumber",o.getTnumber());
+                queryWrapper.eq("lnumber",o.getLnumber());
+                queryWrapper.eq("semester",o.getSemester());
 
             sclass = sclassMapper.selectOne(queryWrapper);
-            result.add(sclass);
+            //查找相应的课程名称以及课程的学分
+            QueryWrapper<Lesson> lessonQueryWrapper = new QueryWrapper<>();
+                lessonQueryWrapper.eq("lnumber",o.getLnumber());
+            lesson = lessonMapper.selectOne(lessonQueryWrapper);
+            //找出对应课程中的课程名称以及学分
+            //构造实体，以便于返回数据
+            SclassAndName sclassAndClassName = new SclassAndName(sclass,lesson.getLname(),lesson.getLcredit());
+
+            result.add(sclassAndClassName);
             //每次拼接一条记录
         }
         page = listToPage(result,pageNum,pageSize);

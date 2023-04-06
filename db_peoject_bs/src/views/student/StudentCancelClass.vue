@@ -32,16 +32,20 @@
 
     <el-table :data="tableData" border stripe header-cell-class-name="headerBg" @selection-change="handleSelectionChange">
       <!--          多选框-->
-      <el-table-column type="selection" width="55" />
+<!--      <el-table-column type="selection" width="55" />-->
 
 
-      <el-table-column prop="lnumber" label="课程号" width="200">
+      <el-table-column prop="lnumber" label="课程号" width="100">
       </el-table-column>
-      <el-table-column prop="tnumber" label="老师号" width="300">
+      <el-table-column prop="classname" label="课程名称" width="150">
+      </el-table-column>
+      <el-table-column prop="lcredit" label="学分">
+      </el-table-column>
+      <el-table-column prop="tnumber" label="老师号">
       </el-table-column>
       <el-table-column prop="semester" label="学期">
       </el-table-column>
-      <el-table-column prop="lessontime" label="时间">
+      <el-table-column prop="lessontime" label="时间" width="140">
       </el-table-column>
       <el-table-column prop="classroom" label="教室">
       </el-table-column>
@@ -132,6 +136,10 @@ export default {
       classroom: "",
       maxsize: "",
       currentsize: "",
+      classname: "",
+      lcredit: "",
+
+
       dialogFormVisible: false,
       multipleSelection: [],
       form: {},

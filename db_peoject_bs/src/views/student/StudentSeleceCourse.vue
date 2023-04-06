@@ -2,8 +2,9 @@
   <div>
     <div style="margin: 10px 0">
       <el-input style="width: 200px" placeholder="请输入课程号" suffix-icon="el-icon-search" v-model="lnumber"></el-input>
+<!--      <el-input style="width: 200px" placeholder="请输入课程名称" class="ml-5" suffix-icon="el-icon-position" v-model="classname"></el-input>-->
+
       <el-input style="width: 200px" placeholder="请输入教师号" class="ml-5" suffix-icon="el-icon-message" v-model="tnumber"></el-input>
-      <!--      <el-input style="width: 200px" placeholder="请输入地址" class="ml-5" suffix-icon="el-icon-position" v-model="lcredit"></el-input>-->
       <!--      <el-input style="width: 200px" placeholder="请输入开课学院号" class="ml-5" suffix-icon="el-icon-position" v-model="lcollege"></el-input>-->
       <el-button class="ml-5" type="primary" @click="load">搜索</el-button>
       <el-button type="warning" @click="reset">重置</el-button>
@@ -31,16 +32,20 @@
 
     <el-table :data="tableData" border stripe header-cell-class-name="headerBg" @selection-change="handleSelectionChange">
       <!--          多选框-->
-      <el-table-column type="selection" width="55" />
+<!--      <el-table-column type="selection" width="55" />-->
 
 
-      <el-table-column prop="lnumber" label="课程号" width="200">
+      <el-table-column prop="lnumber" label="课程号" width="100">
       </el-table-column>
-      <el-table-column prop="tnumber" label="老师号" width="300">
+      <el-table-column prop="classname" label="课程名称" width="150">
+      </el-table-column>
+      <el-table-column prop="lcredit" label="学分">
+      </el-table-column>
+      <el-table-column prop="tnumber" label="老师号">
       </el-table-column>
       <el-table-column prop="semester" label="学期">
       </el-table-column>
-      <el-table-column prop="lessontime" label="时间">
+      <el-table-column prop="lessontime" label="时间" width="140">
       </el-table-column>
       <el-table-column prop="classroom" label="教室">
       </el-table-column>
@@ -134,6 +139,8 @@ export default {
       classroom: "",
       maxsize: "",
       currentsize: "",
+      classname: "",
+      lcredit: "",
       dialogFormVisible: false,
       multipleSelection: [],
       form: {},

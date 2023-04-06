@@ -68,6 +68,9 @@ public class LessonchooseController {
             queryWrapper.eq("snumber",snumber);
         }
         //判断查询是否为空
+        //判断这个课程是否在本学期已经选修过了，选修过就不能再次选修
+
+
         Page Page=new Page(1,1);
         IPage iPage=lessonchooseMapper.selectPage(Page,queryWrapper);
         List row = iPage.getRecords();
