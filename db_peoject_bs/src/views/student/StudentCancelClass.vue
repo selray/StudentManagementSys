@@ -170,7 +170,7 @@ export default {
         }
       })
           .then(res => {
-            this.$message.success("加载成功")
+            //this.$message.success("加载成功")
             console.log(res)
             this.tableData = res.records
             this.total = res.total

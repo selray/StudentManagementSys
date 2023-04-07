@@ -62,7 +62,7 @@
                     :icon="InfoFilled"
                     icon-color="#626AEF"
                     title="是否确认选课?"
-                    @confirm="selectCourse(scope.row.lnumber,scope.row.tnumber,scope.row.semester)"
+                    @confirm="selectCourse(scope.row.lnumber,scope.row.tnumber,scope.row.semester,scope.row.lessontime)"
                     @cancel="cancelEvent"
                 >
                   <template #reference>
@@ -128,6 +128,7 @@ export default {
   data(){
     return{
       tableData: [],
+      tableData2:[],
       total: 0,
       pageNum: 1,
       pageSize: 10,
@@ -135,12 +136,27 @@ export default {
       tnumber: "",
       lnumber: "",
       semester: "",
+      snumber:"",
       lessontime: "",
       classroom: "",
       maxsize: "",
       currentsize: "",
       classname: "",
       lcredit: "",
+      timeData:"",
+      StringSplit:[],
+      WillUpdateSplit:[],
+
+      StringIndex:"",
+      StringIndex2:"",
+      StringIndex3:"",
+      numberSplit:[],
+      numberSplit2:[],
+      number1:0,
+      number2:0,
+      number3:0,
+      number4:0,
+      Flag:0,
       dialogFormVisible: false,
       multipleSelection: [],
       form: {},
@@ -177,47 +193,146 @@ export default {
 
     },
     //选课，在lesson choose表中，添加一个记录
-    selectCourse(lnumber,tnumber,semester){
+    selectCourse(lnumber,tnumber,semester,lessontime){
       //this.$message.success("==============选课点击事件：传入数据："+lnumber+"  "+tnumber+"  "+semester+"  "+JSON.parse(localStorage.getItem("loguserinfo")).studentid);
-      //发送数据到后端
-      this.request.get("/lessonchoose/xk",{
-        params: {
-          lnumber: lnumber,
-          tnumber: tnumber,
-          semester: semester,
+      //先通过已选课程判断，选课是否冲突
+      this.request.get("/sclass/tk/page",{
+        params:{
+          pageNum: this.pageNum,
+          pageSize: this.pageSize,
+          tnumber: this.tnumber,
+          lnumber: this.lnumber,
+          semester: this.semester,
+          lessontime: this.lessontime,
+          classroom: this.classroom,
+          maxsize: this.maxsize,
           snumber: localStorage.getItem("loguserinfo") ? JSON.parse(localStorage.getItem("loguserinfo")).studentid:""
         }
-        })
+      })
           .then(res => {
-            if(res){
-              this.$message.success("选课成功")
-              this.dialogFormVisible = false
-              this.load()
-            }else {
-              this.$message.error("选课失败")
-            }
+            //this.$message.success("加载成功")
+            //console.log(res)
+            // this.tableData
+            this.tableData2 = res.records
+            //this.$message.success("传入前参数:"+lnumber+"  "+tnumber+"  "+semester)
+
+            //console.log(this.tableData)
+            //this.$message.success("tabledata信息："+this.tableData[0].lessontime)
+            //this.$message.success("tabledata长度："+this.tableData.length)
+            //this.FilledTable()
+            //this.total = res.total
           })
+      this.Flag = 0;
+      for(let k = 1; k <= this.tableData2.length ;k++){//遍历datatable数据
+        this.timeData = this.tableData2[k-1].lessontime;
+
+        //获取到了某一个已选课程的上课时间
+        //进行分析判断是否冲突
+        this.StringSplit = this.timeData.split("，");
+        this.WillUpdateSplit = this.lessontime.split("，")
+        //this.$message.success("获取到的时间信息："+lessontime)
+        for(let o = 0;o< this.WillUpdateSplit.length;o++) {  //遍历需要选择课程的时间
+          this.StringIndex = this.WillUpdateSplit[o];
+          //先判断星期
+          for(let x = 0;x < this.StringSplit.length;x++){ //遍历已选课程的时间
+            this.StringIndex2 = this.StringSplit[x];
+            if(this.StringIndex.charAt(0) == this.StringIndex2.charAt(0)){ //星期相等,判断节数
+              //需要选的课程时间数字拆分
+              this.numberSplit = this.StringIndex.split("-");
+              this.numberSplit2 = this.StringIndex2.split("-");
+              this.number1 = this.numberSplit[0];
+              this.number2 = this.numberSplit[1];
+              //现在需要选的课程是 number1-number2
+
+              this.number3 = this.numberSplit2[0];
+              this.number4 = this.numberSplit2[1];
+              //当前查询到了已经选的课程是 number3-number4
+
+              //进行判断
+              if(this.number3 <= this.number1 && this.number4 >= this.number1 || this.number3 <= this.number2 && this.number4 >= this.number2 ){
+                //产生冲突
+                this.$message.error("选课时间冲突，选课失败")
+                this.Flag = 1;
+              }
+            }
+          }
+        }
+      }
+      //this.$message.success("传入后参数:"+lnumber+"  "+tnumber+"  "+semester)
+      this.$message.error("Flag值："+this.Flag)
+      //添加课程
+      if(this.Flag == 0) { //如果没有冲突，才会进入
+        //发送数据到后端
+        //this.$message.success("没有出现时间冲突！")
+        this.request.get("/lessonchoose/xk", {
+          params: {
+            lnumber: lnumber,
+            tnumber: tnumber,
+            semester: semester,
+            snumber: localStorage.getItem("loguserinfo") ? JSON.parse(localStorage.getItem("loguserinfo")).studentid : ""
+          }
+        })
+            .then(res => {
+              if (res) {
+                this.$message.success("选课成功")
+                this.dialogFormVisible = false
+                this.load()
+              } else {
+                this.$message.error("选课失败，重复选课")
+              }
+            })
+      }
+      else {
+        this.$message.error("选课失败，时间冲突")
+      }
     },
     handleAdd(){
       this.dialogFormVisible = true
       this.form = {}
     },
-    // handleEdit(row){
-    //   this.form = row //将数据赋予弹窗
-    //   this.dialogFormVisible = true //显示弹窗
-    //
-    // },
-    // del(id){
-    //   this.request.delete("/lesson/" + id)
-    //       .then(res => {
-    //         if(res){
-    //           this.$message.success("删除成功")
-    //           this.load()
-    //         }else {
-    //           this.$message.error("删除失败")
-    //         }
-    //       })
-    // },
+    JudgeTimeConflicts(lessontime){
+      //判断
+      //lessontime代表需要选择的课程时间
+      for(let k = 1; k <= this.tableData2.length ;k++){//遍历datatable数据
+        this.timeData = this.tableData2[k-1].lessontime;
+
+        //获取到了某一个已选课程的上课时间
+        //进行分析判断是否冲突
+        this.StringSplit = this.timeData.split("，");
+        this.WillUpdateSplit = this.lessontime.split("，")
+        //this.$message.success("获取到的时间信息："+lessontime)
+        for(let o = 0;o< this.WillUpdateSplit.length;o++) {  //遍历需要选择课程的时间
+          this.StringIndex = this.WillUpdateSplit[o];
+          //先判断星期
+          for(let x = 0;x < this.StringSplit.length;x++){ //遍历已选课程的时间
+            this.StringIndex2 = this.StringSplit[x];
+            if(this.StringIndex.charAt(0) == this.StringIndex2.charAt(0)){ //星期相等,判断节数
+              //需要选的课程时间数字拆分
+              this.numberSplit = this.StringIndex.split("-");
+              this.numberSplit2 = this.StringIndex2.split("-");
+              this.number1 = this.numberSplit[0];
+              this.number2 = this.numberSplit[1];
+              //现在需要选的课程是 number1-number2
+
+              this.number3 = this.numberSplit2[0];
+              this.number4 = this.numberSplit2[1];
+              //当前查询到了已经选的课程是 number3-number4
+
+              //进行判断
+              if(this.number3 <= this.number1 && this.number4 >= this.number1 || this.number3 <= this.number2 && this.number4 >= this.number2 ){
+                //产生冲突
+                this.$message.error("选课时间冲突，选课失败")
+                return false;
+              }
+            }
+          }
+        }
+      }
+      return true;
+      //this.$message.success("传入后参数:"+lnumber+"  "+tnumber+"  "+semester)
+
+    },
+
     handleSelectionChange(val){
       console.log(val)
       this.multipleSelection = val

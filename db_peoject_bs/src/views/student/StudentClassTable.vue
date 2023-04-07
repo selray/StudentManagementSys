@@ -247,14 +247,20 @@ export default {
                 this.CharData = String.fromCharCode(this.IntData);
                 this.StringIndex = this.StringIndex.substring(1); //把第一个星期，去掉，只剩下节数
                 this.hourTime = this.StringIndex.split("-");
+
                 //this.hourTime[0] = this.hourTime[0].split("一");
                 this.hourTime1 = this.hourTime[0]
-
                 this.hourTime2 = this.hourTime[1]
 
                 //this.$message.success("11测试数据："+this.hourTime1+"|"+this.hourTime2)
                 this.CourseTableDis[this.hourTime1-1][0] = this.CharData;
                 this.CourseTableDis[this.hourTime2-1][0] = this.CharData;
+
+                //在前后时间点中间进行全部填充
+                for(let q=1;q<this.hourTime2-this.hourTime1;q++){
+                  this.CourseTableDis[this.hourTime1-1+q][0] = this.CharData;
+                  //this.$message.success("测试数据：")
+                }
                 //this.CourseTableDis[0][0] = "A"
                 //this.$message.success("测试数据："+this.CourseTableDis[this.hourTime1][0]+"|"+this.CourseTableDis[this.hourTime2][0])
               }
@@ -272,6 +278,10 @@ export default {
                 //this.$message.success("11测试数据："+this.hourTime1+"|"+this.hourTime2)
                 this.CourseTableDis[this.hourTime1-1][1] = this.CharData;
                 this.CourseTableDis[this.hourTime2-1][1] = this.CharData;
+                for(let q=1;q<this.hourTime2-this.hourTime1;q++){
+                  this.CourseTableDis[this.hourTime1-1+q][1] = this.CharData;
+                  //this.$message.success("测试数据：")
+                }
                 //this.$message.success("测试数据："+this.WeekTime)
               }
               else if(this.WeekTime=="三"){
@@ -288,6 +298,10 @@ export default {
                 //this.$message.success("11测试数据："+this.hourTime1+"|"+this.hourTime2)
                 this.CourseTableDis[this.hourTime1-1][2] = this.CharData;
                 this.CourseTableDis[this.hourTime2-1][2] = this.CharData;
+                for(let q=1;q<this.hourTime2-this.hourTime1;q++){
+                  this.CourseTableDis[this.hourTime1-1+q][2] = this.CharData;
+                  //this.$message.success("测试数据：")
+                }
                 //this.$message.success("测试数据："+this.WeekTime)
               }
               else if(this.WeekTime=="四"){
@@ -304,6 +318,10 @@ export default {
                 //this.$message.success("11测试数据："+this.hourTime1+"|"+this.hourTime2)
                 this.CourseTableDis[this.hourTime1-1][3] = this.CharData;
                 this.CourseTableDis[this.hourTime2-1][3] = this.CharData;
+                for(let q=1;q<this.hourTime2-this.hourTime1;q++){
+                  this.CourseTableDis[this.hourTime1-1+q][3] = this.CharData;
+                  //this.$message.success("测试数据：")
+                }
                 //this.$message.success("测试数据："+this.CourseTableDis[this.hourTime1-1][3]+"|"+this.CourseTableDis[this.hourTime2-1][3])
                 //this.$message.success("测试数据："+this.WeekTime)
               }
@@ -321,6 +339,10 @@ export default {
                 //this.$message.success("11测试数据："+this.hourTime1+"|"+this.hourTime2)
                 this.CourseTableDis[this.hourTime1-1][4] = this.CharData;
                 this.CourseTableDis[this.hourTime2-1][4] = this.CharData;
+                for(let q=1;q<this.hourTime2-this.hourTime1;q++){
+                  this.CourseTableDis[this.hourTime1-1+q][4] = this.CharData;
+                  //this.$message.success("测试数据：")
+                }
                 //this.$message.success("测试数据："+this.WeekTime)
               }
               //进行设置
