@@ -6,7 +6,7 @@
       <el-button type="warning" @click="reset">重置</el-button>
     </div>
     <div style="margin: 10px 0">
-      <el-upload action="http://localhost:9090/file/upload" :show-file-list="false" accept="xlsx" :on-success="handleFileUploadSuccess" style="display: inline-block">
+      <el-upload action="http://124.71.166.37:9090/file/upload" :show-file-list="false" accept="xlsx" :on-success="handleFileUploadSuccess" style="display: inline-block">
         <el-button type="primary" class="ml-5">上传文件<i class = "el-icon-top"></i></el-button>
       </el-upload>
       <el-popconfirm
@@ -102,7 +102,7 @@ export default {
     load(){
       //请求分页查询数据
       //通过axios向后台请求参数
-      //通过request.js中的baseurl已经将前面的http://localhost:9090部分省略了
+      //通过request.js中的baseurl已经将前面的http://124.71.166.37:9090部分省略了
       this.request.get("/file/page",{
         params:{
           pageNum: this.pageNum,

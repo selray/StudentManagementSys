@@ -6,7 +6,7 @@
       <el-upload
           style="text-align: center"
           class="avatar-uploader"
-          action="http://localhost:9090/file/upload"
+          action="http://124.71.166.37:9090/file/upload"
           :show-file-list="false"
           :on-success="handleAvatarSuccess"
       >

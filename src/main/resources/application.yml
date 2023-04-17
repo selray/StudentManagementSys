@@ -3,9 +3,12 @@ server:
 spring:
     datasource:
         driver-class-name: com.mysql.cj.jdbc.Driver
-        url: jdbc:mysql://localhost:3306/stumansys?serverTimezone=GMT%2b8
+#        url: jdbc:mysql://124.71.166.37:3306/stumansys?serverTimezone=GMT%2b8
+        url: jdbc:mysql://124.71.166.37:3306/stumansys?serverTimezone=GMT%2b8
+
+
         username: root
-        password: yjr3062439765
+        password: root
 
 
 # springboot Swagger2
@@ -24,6 +27,6 @@ mybatis-plus:
 
 files:
     upload:
-        path: C:\Users\yijin\Desktop\db_project\database_project\files\
-
+#        path: C:\Users\yijin\Desktop\db_project\database_project\files\
+         path: /home/files/
 
