@@ -3,14 +3,13 @@ package com.example.springboot.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.log.Log;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.springboot.common.Constants;
 import com.example.springboot.controller.dto.UserDTO;
 import com.example.springboot.entity.Student;
-import com.example.springboot.entity.department;
 import com.example.springboot.exception.ServiceException;
 import com.example.springboot.mapper.StudentMapper;
 import com.example.springboot.service.IStudentService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.springboot.utils.TokenUtils;
 import org.springframework.stereotype.Service;
 

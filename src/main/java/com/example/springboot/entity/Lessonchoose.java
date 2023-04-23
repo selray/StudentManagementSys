@@ -1,14 +1,13 @@
 package com.example.springboot.entity;
 
-import java.io.Serializable;
-
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 /**
  * <p>
@@ -19,7 +18,9 @@ import lombok.Setter;
  * @since 2023-04-02
  */
 @Data
-  @ApiModel(value = "Lessonchoose对象", description = "")
+@AllArgsConstructor
+@NoArgsConstructor
+@ApiModel(value = "Lessonchoose对象", description = "")
 public class Lessonchoose implements Serializable {
 
     private static final long serialVersionUID = 1L;

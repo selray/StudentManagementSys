@@ -1,19 +1,16 @@
 package com.example.springboot.controller;
 
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.springboot.common.Constants;
 import com.example.springboot.common.Result;
-import com.example.springboot.controller.dto.UserDTO;
+import com.example.springboot.controller.dto.TeacherDTO;
+import com.example.springboot.entity.Teacher;
+import com.example.springboot.service.ITeacherService;
 import org.springframework.web.bind.annotation.*;
+
 import javax.annotation.Resource;
 import java.util.List;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-
-import com.example.springboot.service.ITeacherService;
-import com.example.springboot.entity.Teacher;
-
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
@@ -52,16 +49,26 @@ public class TeacherController {
 
 
     @PostMapping("/login")
-    public Result login(@RequestBody UserDTO userDTO){
+    public Result login(@RequestBody TeacherDTO teacherDTO){
         //新增或者更新
-        String username = userDTO.getUsername();
-        String password = userDTO.getPassword();
+        String username = teacherDTO.getUsername();
+        String password = teacherDTO.getPassword();
         if(StrUtil.isBlank(username) || StrUtil.isBlank(password)){
-            //校验字符串是否是空
+            //校验字符串是否为空
             return  Result.error(Constants.CODE_400,"参数错误");
         }
-        UserDTO dto= teacherService.login(userDTO);
+        TeacherDTO dto= teacherService.login(teacherDTO);
         return Result.success(dto);
+    }
+
+    @PostMapping("/register")
+    public Result register(@RequestBody TeacherDTO teacherDTO){//@RequestBody将前台josn对象转换为后台的java对象
+        String username= teacherDTO.getUsername();
+        String password=teacherDTO.getPassword();
+        if (StrUtil.isBlank(username) || StrUtil.isBlank(password)){
+            return Result.error(Constants.CODE_400,"参数错误");
+        }
+        return Result.success(teacherService.register(teacherDTO));
     }
 
     //查询所有
@@ -72,8 +79,16 @@ public class TeacherController {
 
     //根据id查询
     @GetMapping("/{id}")
-    public Teacher findOne(@PathVariable Integer id){
+    public Teacher findeOne(@PathVariable Integer id){
         return teacherService.getById(id);
+    }
+
+    @GetMapping("/id/{id}")
+    public Result findOne(@PathVariable Integer id){
+        QueryWrapper<Teacher> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("Tnumber",id);
+        Teacher teacher = teacherService.getOne(queryWrapper);
+        return Result.success(teacher);
     }
 
     //分页查询

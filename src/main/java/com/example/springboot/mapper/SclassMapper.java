@@ -1,7 +1,7 @@
 package com.example.springboot.mapper;
 
-import com.example.springboot.entity.Sclass;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.example.springboot.entity.Sclass;
 
 /**
  * <p>

@@ -1,7 +1,7 @@
 package com.example.springboot.mapper;
 
-import com.example.springboot.entity.Student;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.example.springboot.entity.Student;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

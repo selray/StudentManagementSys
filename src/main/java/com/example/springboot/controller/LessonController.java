@@ -2,24 +2,20 @@ package com.example.springboot.controller;
 
 import cn.hutool.poi.excel.ExcelUtil;
 import cn.hutool.poi.excel.ExcelWriter;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.example.springboot.common.Result;
+import com.example.springboot.entity.Lesson;
 import com.example.springboot.entity.Student;
-import com.example.springboot.entity.department;
+import com.example.springboot.service.ILessonService;
 import com.example.springboot.utils.TokenUtils;
 import org.springframework.web.bind.annotation.*;
+
 import javax.annotation.Resource;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URLEncoder;
 import java.util.List;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-
-import com.example.springboot.service.ILessonService;
-import com.example.springboot.entity.Lesson;
-
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>

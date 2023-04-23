@@ -76,8 +76,8 @@ export default {
               this.request.post("/teacher/login",this.user).then(res =>{
                 if(res.code == '200'){   //判断是否是自己定义的异常处理，这里是指数据库验证成功
                   localStorage.setItem("loguserinfo",JSON.stringify(res.data)) //登录成功后，将用户信息存放在浏览器中，以便于其他操作
-                  this.$router.push("/manage")  //跳转到老师登录界面
-                  this.$message.success("老师登录成功")
+                  this.$router.push("/teachermanage")  //跳转到老师登录界面
+                  this.$message.success("教师登录成功")
                 }
                 else{ //验证老师身份失败，转而验证管理员
                   //this.$message.error(res.msg)

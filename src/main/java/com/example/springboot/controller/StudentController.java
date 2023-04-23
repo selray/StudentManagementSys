@@ -1,19 +1,16 @@
 package com.example.springboot.controller;
 
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.springboot.common.Constants;
 import com.example.springboot.common.Result;
 import com.example.springboot.controller.dto.UserDTO;
+import com.example.springboot.entity.Student;
+import com.example.springboot.service.IStudentService;
 import org.springframework.web.bind.annotation.*;
+
 import javax.annotation.Resource;
 import java.util.List;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-
-import com.example.springboot.service.IStudentService;
-import com.example.springboot.entity.Student;
-
-import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>

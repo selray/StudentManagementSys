@@ -1,23 +1,30 @@
 package com.example.springboot.controller;
 
+import cn.hutool.poi.excel.ExcelUtil;
+import cn.hutool.poi.excel.ExcelWriter;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.example.springboot.entity.Sclass;
-import com.example.springboot.entity.department;
+import com.example.springboot.entity.*;
+import com.example.springboot.mapper.LessonMapper;
 import com.example.springboot.mapper.LessonchooseMapper;
 import com.example.springboot.mapper.SclassMapper;
-import com.example.springboot.service.ISclassService;
-import com.example.springboot.service.impl.SclassServiceImpl;
-import io.swagger.models.auth.In;
-import org.springframework.web.bind.annotation.*;
-import javax.annotation.Resource;
-import java.util.List;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-
+import com.example.springboot.service.ILessonService;
 import com.example.springboot.service.ILessonchooseService;
-import com.example.springboot.entity.Lessonchoose;
+import com.example.springboot.service.ISclassService;
+import com.example.springboot.service.IStudentService;
+import com.example.springboot.utils.TokenUtils;
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.RestController;
+import javax.annotation.Resource;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>
@@ -41,11 +48,55 @@ public class LessonchooseController {
     private SclassMapper sclassMapper;
     @Resource
     private ISclassService sclassService;
+
+    @Resource
+    private ILessonService lessonService;
+    @Resource
+    private LessonMapper lessonMapper;
+    @Resource
+    private IStudentService studentService;
+
     //新增或更新
     @PostMapping
-    public boolean save(@RequestBody Lessonchoose lessonchoose){
+    public boolean save(@RequestBody StudentScore s){//@RequestBody将前台josn对象转换为后台的java对象
         //新增或者更新
-        return lessonchooseService.saveOrUpdate(lessonchoose);
+        UpdateWrapper<Lessonchoose> updateWrapper=new UpdateWrapper<>();
+        updateWrapper.eq("snumber",s.getSnumber());
+        updateWrapper.eq("lnumber",s.getLnumber());
+        updateWrapper.eq("tnumber",s.getTnumber());
+
+        if(s.getPsgrade()!=null&&s.getKsgrade()!=null){
+            float psindex=(float)(s.getGradeindex()/10)/10;    //平时分占比，如0.4
+            float ksindex=(float)(s.getGradeindex()%10)/10;    //考试分占比，如0.6
+            s.setTotalgrade((int)(s.getPsgrade()*psindex+s.getKsgrade()*ksindex));
+            if(s.getTotalgrade()>=90&&s.getTotalgrade()<=100)
+            {
+                s.setGpa(4.0F);
+            } else if (s.getTotalgrade() >= 85 && s.getTotalgrade() <= 89) {
+                s.setGpa(3.7F);
+            } else if (s.getTotalgrade() >= 82 && s.getTotalgrade() <= 84) {
+                s.setGpa(3.3F);
+            } else if (s.getTotalgrade() >= 78 && s.getTotalgrade() <= 81) {
+                s.setGpa(3.0F);
+            } else if (s.getTotalgrade() >= 75 && s.getTotalgrade() <= 77) {
+                s.setGpa(2.7F);
+            } else if (s.getTotalgrade() >= 72 && s.getTotalgrade() <= 74) {
+                s.setGpa(2.3F);
+            } else if (s.getTotalgrade() >= 68 && s.getTotalgrade() <= 71) {
+                s.setGpa(2.0F);
+            }else if (s.getTotalgrade() >= 66 && s.getTotalgrade() <= 67) {
+                s.setGpa(1.7F);
+            }else if (s.getTotalgrade() >= 64 && s.getTotalgrade() <= 65) {
+                s.setGpa(1.5F);
+            }else if (s.getTotalgrade() >= 60 && s.getTotalgrade() <= 63) {
+                s.setGpa(1.0F);
+            }else if (s.getTotalgrade() < 60) {
+                s.setGpa((float) 0);
+            }
+        }
+
+        Lessonchoose lessonchoose=new Lessonchoose(s.getSnumber(),s.getLnumber(),s.getTnumber(),s.getPsgrade(),s.getKsgrade(),s.getTotalgrade(),s.getGpa(),s.getSemester());
+        return lessonchooseService.saveOrUpdate(lessonchoose,updateWrapper);
     }
 
     @GetMapping("/xk")
@@ -206,12 +257,150 @@ public class LessonchooseController {
     }
 
     //分页查询
-//    @GetMapping("/page")
-//    public Page<Lessonchoose> findPage(@RequestParam Interger pageNum,
-//        @RequestParam Interger pageSize){
-//        QueryWrapper<department> queryWrapper = new QueryWrapper<>();
-//        //queryWrapper.orderByDesc("id");
-//        return lessonchooseService.page(new Page<>(pageNum,pageSize));
-//    }
+    @GetMapping("/page")
+    public IPage<StudentScore> findPage(@RequestParam Integer pageNum,
+                                       @RequestParam Integer pageSize,
+                                       @RequestParam (defaultValue = "")String snumber,
+                                       @RequestParam (defaultValue = "")String sname,
+                                       @RequestParam (defaultValue = "")String lnumber,
+                                       @RequestParam (defaultValue = "")String lname,
+                                       @RequestParam(defaultValue = "") String semester){
+        QueryWrapper<Lessonchoose> queryWrapper= new QueryWrapper<>();
+        if(!"".equals(snumber)){
+            queryWrapper.like("snumber",snumber);
+        }
+        if(!"".equals(sname)){
+            QueryWrapper<Student> studentQueryWrapper=new QueryWrapper<>();
+            if("".equals(snumber)){     //如果学号参数为空进行覆盖
+                studentQueryWrapper.like("name",sname);
+                Student student=studentService.getOne(studentQueryWrapper);
+                //找到学生名对应的学号
+                queryWrapper.like("snumber",student.getStudentid());
+            }
+        }
+        if(!"".equals(lnumber)){
+            queryWrapper.like("lnumber",lnumber);
+        }
+        if(!"".equals(lname)){
+            QueryWrapper<Lesson> lessonQueryWrapper = new QueryWrapper<>();
+            if("".equals(lnumber)){//如果参数课程号为空，覆盖课程号，否则不覆盖
+                lessonQueryWrapper.like("lname",lname);
+                Lesson lesson=lessonService.getOne(lessonQueryWrapper);
+                //找到某一个课程名对应的课程号
+                queryWrapper.like("lnumber",lesson.getLnumber());
+            }
+        }
+        if(!"".equals(semester)){
+            queryWrapper.like("semester",semester);
+        }
+        queryWrapper.orderByAsc("lnumber");
+        //根据当前老师登录信息查询该老师名下选课学生，必有的
+        Teacher currentTeacher= TokenUtils.getCurrentTeacher();
+        queryWrapper.like("tnumber", currentTeacher != null ? currentTeacher.getTnumber() : "");
+        //根据条件构造器去查询
+        List<Lessonchoose> lessonchooses=lessonchooseService.list(queryWrapper);
+
+        List<StudentScore> result = new ArrayList<>();
+        Lesson lesson;
+        Student student;
+        //随后，遍历查找到的数据，针对每一行，也就是每一个课程找到课程的课程名称和课程学分还有学生的姓名
+        for(Lessonchoose o:lessonchooses){
+            //根据课号查询课名、分数比等
+            QueryWrapper<Lesson> lessonQueryWrapper = new QueryWrapper<>();
+            lessonQueryWrapper.eq("lnumber",o.getLnumber());
+            lesson=lessonService.getOne(lessonQueryWrapper);
+
+            //根据学生号查询姓名
+            QueryWrapper<Student> studentQueryWrapper=new QueryWrapper<>();
+            studentQueryWrapper.eq("studentid",o.getSnumber());
+            student=studentService.getOne(studentQueryWrapper);
+
+            StudentScore studentScore=new StudentScore(o,student.getName(),lesson.getLname(),lesson.getGradeindex());
+
+            result.add(studentScore);
+        }
+
+        IPage<StudentScore> page;
+        page=listToPage(result,pageNum,pageSize);
+
+        return page;
+    }
+
+
+
+    public static IPage listToPage(List list, int pageNum, int pageSize){
+        List pageList = new ArrayList<>();
+        int curIdx = pageNum > 1 ? (pageNum - 1) * pageSize : 0;
+        for (int i = 0; i < pageSize && curIdx + i < list.size(); i++) {
+            pageList.add(list.get(curIdx + i));
+        }
+        IPage page = new Page<>(pageNum, pageSize);
+        page.setRecords(pageList);
+        page.setTotal(list.size());
+        return page;
+    }
+
+    /**
+     * 导出接口
+     */
+    @GetMapping("/export")
+    public void export(HttpServletResponse response, @RequestParam("tableData") String tableDataStr) throws Exception{
+        //Gson 对象用于将 JSON 字符串转换为 Java 对象
+        List<StudentScore> tableData = new Gson().fromJson(tableDataStr, new TypeToken<List<StudentScore>>() {}.getType());
+
+        QueryWrapper<Lessonchoose> queryWrapper= new QueryWrapper<>();
+
+        //找到对应课程号
+        queryWrapper.like("lnumber",tableData.get(0).getLnumber());
+
+        queryWrapper.orderByAsc("lnumber");
+        //根据当前老师登录信息查询该老师名下选课学生，必有的
+        queryWrapper.like("tnumber", tableData.get(0).getTnumber());
+        //根据条件构造器去查询
+        List<Lessonchoose> lessonchooses=lessonchooseService.list(queryWrapper);
+        List<StudentScore> result = new ArrayList<>();            //要导出的列表
+        Lesson lesson;
+        Student student;
+        //随后，遍历查找到的数据，针对每一行，也就是每一个课程找到课程的课程名称和课程学分还有学生的姓名
+        for(Lessonchoose o:lessonchooses){
+            //根据课号查询课名、分数比等
+            QueryWrapper<Lesson> lessonQueryWrapper = new QueryWrapper<>();
+            lessonQueryWrapper.eq("lnumber",o.getLnumber());
+            lesson=lessonService.getOne(lessonQueryWrapper);
+
+            //根据学生号查询姓名
+            QueryWrapper<Student> studentQueryWrapper=new QueryWrapper<>();
+            studentQueryWrapper.eq("studentid",o.getSnumber());
+            student=studentService.getOne(studentQueryWrapper);
+
+            StudentScore studentScore=new StudentScore(o,student.getName(),lesson.getLname(),lesson.getGradeindex());
+
+            result.add(studentScore);
+        }
+
+        //通过工具类创建writer 写出到磁盘路径
+        //ExcelWriter writer= ExcelUtil.getWriter(fileUploadPath + "/用户信息.xlsx");
+        //在内存操作，写出到浏览器
+        ExcelWriter writer= ExcelUtil.getWriter(true);
+        //自定义标题列名
+//        writer.addHeaderAlias("deptid","学院号");
+//        writer.addHeaderAlias("deptname","学院名");
+//        writer.addHeaderAlias("address","地址");
+//        writer.addHeaderAlias("phonecode","电话号码");
+
+        //一次性写出list内的对象到excel，使用默认样式，强制输出标题
+        writer.write(result,true);
+
+        //设置浏览器响应格式
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");
+        String fileName= URLEncoder.encode("学生成绩","UTF-8");
+        response.setHeader("Content-Disposition","attachment;filename="+fileName+".xlsx");
+
+        ServletOutputStream out= response.getOutputStream();
+        writer.flush(out,true);
+        out.close();
+        writer.close();
+    }
+
 }
 

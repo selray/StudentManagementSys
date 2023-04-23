@@ -5,16 +5,15 @@ import cn.hutool.core.util.StrUtil;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.example.springboot.entity.Student;
+import com.example.springboot.entity.Teacher;
 import com.example.springboot.service.IStudentService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.springboot.service.ITeacherService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletRequestAttributeEvent;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 //生成token
@@ -27,13 +26,21 @@ public class TokenUtils {
     @Resource
     private IStudentService studentService;
 
-
+    private static ITeacherService staticTeacherService;
+    @Resource
+    private ITeacherService teacherService;
 
 //    后台项目启动的时候
     @PostConstruct
     public void setStudentService(){
         staticstudentService = studentService;
     }
+
+    @PostConstruct
+    public void setTeacherService(){
+        staticTeacherService=teacherService;
+    }
+
 
     public static String genToken(String userId, String sign) {
         return JWT.create().withAudience(userId) //将userid保存到token里面。作为载荷
@@ -54,6 +61,20 @@ public class TokenUtils {
             return null;
         }
           return null;
+    }
+
+    public static Teacher getCurrentTeacher(){
+        try{
+            HttpServletRequest request=((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+            String token=request.getHeader("token");
+            if(StrUtil.isNotBlank(token)){
+                String userId=JWT.decode(token).getAudience().get(0);
+                return staticTeacherService.getById(Integer.valueOf(userId));
+            }
+        }catch (Exception e){
+            return null;
+        }
+        return null;
     }
 }
 

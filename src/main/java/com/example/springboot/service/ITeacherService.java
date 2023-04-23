@@ -1,8 +1,8 @@
 package com.example.springboot.service;
 
-import com.example.springboot.controller.dto.UserDTO;
-import com.example.springboot.entity.Teacher;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.example.springboot.controller.dto.TeacherDTO;
+import com.example.springboot.entity.Teacher;
 
 /**
  * <p>
@@ -14,5 +14,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ITeacherService extends IService<Teacher> {
 
-    UserDTO login(UserDTO userDTO);
+    TeacherDTO login(TeacherDTO teacherDTO);
+
+    Teacher register(TeacherDTO teacherDTO);
 }

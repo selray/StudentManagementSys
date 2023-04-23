@@ -1,9 +1,9 @@
 package com.example.springboot.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.springboot.entity.Sclass;
 import com.example.springboot.mapper.SclassMapper;
 import com.example.springboot.service.ISclassService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 /**

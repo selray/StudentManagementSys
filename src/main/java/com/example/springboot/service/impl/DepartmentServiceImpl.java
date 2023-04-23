@@ -1,11 +1,8 @@
 package com.example.springboot.service.impl;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.example.springboot.controller.dto.UserDTO;
 import com.example.springboot.entity.department;
-import com.example.springboot.entity.Student;
 import com.example.springboot.mapper.departmentMapper;
 import com.example.springboot.service.DepartmentService;
 import org.springframework.stereotype.Service;

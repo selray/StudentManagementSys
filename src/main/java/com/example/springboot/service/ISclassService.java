@@ -1,7 +1,7 @@
 package com.example.springboot.service;
 
-import com.example.springboot.entity.Sclass;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.example.springboot.entity.Sclass;
 
 /**
  * <p>
