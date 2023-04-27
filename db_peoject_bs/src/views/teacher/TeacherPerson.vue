@@ -46,10 +46,12 @@ export default {
   created() {
     this.getUser().then(res =>{
       this.form = res
+      //console.log(res)
     })
   },
   methods:{
     async getUser(){
+      //console.log((await this.request.get('/teacher/id/'+this.user.tnumber)).data)
       return  (await this.request.get('/teacher/id/'+this.user.tnumber)).data
     },
     save(){
@@ -59,12 +61,13 @@ export default {
 
           //更新浏览器存储信息
           this.getUser().then(res =>{
+            //console.log(res)
             res.token  = JSON.parse(localStorage.getItem("loguserinfo")).token
+            //console.log(localStorage.getItem("loguserinfo"))
+            //console.log(JSON.parse(localStorage.getItem("loguserinfo")))
             //localStorage.removeItem("loguserinfo")
             localStorage.setItem("loguserinfo",JSON.stringify(res))
           })
-
-
 
         }else {
           this.$message.error("保存失败")

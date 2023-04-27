@@ -65,35 +65,35 @@ public class LessonchooseController {
         updateWrapper.eq("lnumber",s.getLnumber());
         updateWrapper.eq("tnumber",s.getTnumber());
 
-        if(s.getPsgrade()!=null&&s.getKsgrade()!=null){
-            float psindex=(float)(s.getGradeindex()/10)/10;    //平时分占比，如0.4
-            float ksindex=(float)(s.getGradeindex()%10)/10;    //考试分占比，如0.6
-            s.setTotalgrade((int)(s.getPsgrade()*psindex+s.getKsgrade()*ksindex));
-            if(s.getTotalgrade()>=90&&s.getTotalgrade()<=100)
-            {
-                s.setGpa(4.0F);
-            } else if (s.getTotalgrade() >= 85 && s.getTotalgrade() <= 89) {
-                s.setGpa(3.7F);
-            } else if (s.getTotalgrade() >= 82 && s.getTotalgrade() <= 84) {
-                s.setGpa(3.3F);
-            } else if (s.getTotalgrade() >= 78 && s.getTotalgrade() <= 81) {
-                s.setGpa(3.0F);
-            } else if (s.getTotalgrade() >= 75 && s.getTotalgrade() <= 77) {
-                s.setGpa(2.7F);
-            } else if (s.getTotalgrade() >= 72 && s.getTotalgrade() <= 74) {
-                s.setGpa(2.3F);
-            } else if (s.getTotalgrade() >= 68 && s.getTotalgrade() <= 71) {
-                s.setGpa(2.0F);
-            }else if (s.getTotalgrade() >= 66 && s.getTotalgrade() <= 67) {
-                s.setGpa(1.7F);
-            }else if (s.getTotalgrade() >= 64 && s.getTotalgrade() <= 65) {
-                s.setGpa(1.5F);
-            }else if (s.getTotalgrade() >= 60 && s.getTotalgrade() <= 63) {
-                s.setGpa(1.0F);
-            }else if (s.getTotalgrade() < 60) {
-                s.setGpa((float) 0);
-            }
-        }
+//        if(s.getPsgrade()!=null&&s.getKsgrade()!=null){
+//            float psindex=(float)(s.getGradeindex()/10)/10;    //平时分占比，如0.4
+//            float ksindex=(float)(s.getGradeindex()%10)/10;    //考试分占比，如0.6
+//            s.setTotalgrade((int)(s.getPsgrade()*psindex+s.getKsgrade()*ksindex));
+//            if(s.getTotalgrade()>=90&&s.getTotalgrade()<=100)
+//            {
+//                s.setGpa(4.0F);
+//            } else if (s.getTotalgrade() >= 85 && s.getTotalgrade() <= 89) {
+//                s.setGpa(3.7F);
+//            } else if (s.getTotalgrade() >= 82 && s.getTotalgrade() <= 84) {
+//                s.setGpa(3.3F);
+//            } else if (s.getTotalgrade() >= 78 && s.getTotalgrade() <= 81) {
+//                s.setGpa(3.0F);
+//            } else if (s.getTotalgrade() >= 75 && s.getTotalgrade() <= 77) {
+//                s.setGpa(2.7F);
+//            } else if (s.getTotalgrade() >= 72 && s.getTotalgrade() <= 74) {
+//                s.setGpa(2.3F);
+//            } else if (s.getTotalgrade() >= 68 && s.getTotalgrade() <= 71) {
+//                s.setGpa(2.0F);
+//            }else if (s.getTotalgrade() >= 66 && s.getTotalgrade() <= 67) {
+//                s.setGpa(1.7F);
+//            }else if (s.getTotalgrade() >= 64 && s.getTotalgrade() <= 65) {
+//                s.setGpa(1.5F);
+//            }else if (s.getTotalgrade() >= 60 && s.getTotalgrade() <= 63) {
+//                s.setGpa(1.0F);
+//            }else if (s.getTotalgrade() < 60) {
+//                s.setGpa((float) 0);
+//            }
+//        }
 
         Lessonchoose lessonchoose=new Lessonchoose(s.getSnumber(),s.getLnumber(),s.getTnumber(),s.getPsgrade(),s.getKsgrade(),s.getTotalgrade(),s.getGpa(),s.getSemester());
         return lessonchooseService.saveOrUpdate(lessonchoose,updateWrapper);
