@@ -1,6 +1,6 @@
 <template>
   <el-menu :default-openeds="['1', '3']" style="min-height: 100%;overflow-x: hidden;"
-           background-color="rgb(48,65,86)"
+           background-color="#76A8EA"
            text-color="#fff"
            active-text-color="#ffd04b"
            :collapse-transition="false"
@@ -9,7 +9,7 @@
            @select="handleSelect"
   >
     <div style="height: 60px;line-height: 60px;text-align: center;">
-      <img src="../../assets/logo.png" alt="" style="width: 20px;position: relative;top:5px;margin-right: 5px;">
+      <img src="../../assets/shulogo.png" alt="" style="width: 40px;position: relative;top:8px;margin-right: 5px;">
       <b style="color: white;" v-show="!isCollapse">选课管理系统</b>
     </div>
 

@@ -4,11 +4,11 @@ spring:
     datasource:
         driver-class-name: com.mysql.cj.jdbc.Driver
 #        url: jdbc:mysql://124.71.166.37:3306/stumansys?serverTimezone=GMT%2b8
-        url: jdbc:mysql://124.71.166.37:3306/stumansys?serverTimezone=GMT%2b8
+        url: jdbc:mysql://61.171.68.199/stumansys?serverTimezone=GMT%2b8
 
 
         username: root
-        password: root
+        password: yjr3062439765
 
 
 # springboot Swagger2
