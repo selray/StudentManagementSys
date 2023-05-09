@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.example.springboot.common.Result;
 import com.example.springboot.entity.*;
 import com.example.springboot.mapper.LessonMapper;
 import com.example.springboot.mapper.LessonchooseMapper;
@@ -97,6 +98,17 @@ public class LessonchooseController {
 
         Lessonchoose lessonchoose=new Lessonchoose(s.getSnumber(),s.getLnumber(),s.getTnumber(),s.getPsgrade(),s.getKsgrade(),s.getTotalgrade(),s.getGpa(),s.getSemester());
         return lessonchooseService.saveOrUpdate(lessonchoose,updateWrapper);
+    }
+
+    // 教师端所需要的接口:
+    // 查询选择某一节课的所有的学生信息
+    @GetMapping("/getClassStudents")
+    public Result getClassStudents(@RequestParam Integer pageNum,
+                                   @RequestParam Integer pageSize,
+                                   @RequestParam (defaultValue = "")Integer tnumber,
+                                   @RequestParam (defaultValue = "")Integer lnumber){
+        Page<Student> page=lessonchooseService.getClassStudents(new Page<>(pageNum,pageSize),tnumber,lnumber);
+        return Result.success(page);
     }
 
     @GetMapping("/xk")
@@ -340,13 +352,21 @@ public class LessonchooseController {
         return page;
     }
 
-    /**
+    /**导出学生成绩单信息
+     *
+     * 导出格式：
+     * snumber	sname	lnumber	lname	tnumber	psgrade	ksgrade	totalgrade	gpa	semester	gradeindex
+     * gradeindex	学号	姓名	课号	课程名	教师号	平时分	考试分	总分	绩点	学期 分数比
+     *
+     *
      * 导出接口
      */
     @GetMapping("/export")
     public void export(HttpServletResponse response, @RequestParam("tableData") String tableDataStr) throws Exception{
         //Gson 对象用于将 JSON 字符串转换为 Java 对象
         List<StudentScore> tableData = new Gson().fromJson(tableDataStr, new TypeToken<List<StudentScore>>() {}.getType());
+        //因为tableData不全，只有第一页的，所以要重新查
+
 
         QueryWrapper<Lessonchoose> queryWrapper= new QueryWrapper<>();
 
@@ -354,10 +374,13 @@ public class LessonchooseController {
         queryWrapper.like("lnumber",tableData.get(0).getLnumber());
 
         queryWrapper.orderByAsc("lnumber");
+
         //根据当前老师登录信息查询该老师名下选课学生，必有的
         queryWrapper.like("tnumber", tableData.get(0).getTnumber());
+
         //根据条件构造器去查询
         List<Lessonchoose> lessonchooses=lessonchooseService.list(queryWrapper);
+
         List<StudentScore> result = new ArrayList<>();            //要导出的列表
         Lesson lesson;
         Student student;
@@ -383,17 +406,60 @@ public class LessonchooseController {
         //在内存操作，写出到浏览器
         ExcelWriter writer= ExcelUtil.getWriter(true);
         //自定义标题列名
-//        writer.addHeaderAlias("deptid","学院号");
-//        writer.addHeaderAlias("deptname","学院名");
-//        writer.addHeaderAlias("address","地址");
-//        writer.addHeaderAlias("phonecode","电话号码");
+        writer.addHeaderAlias("snumber","学号");
+        writer.addHeaderAlias("sname","姓名");
+        writer.addHeaderAlias("lnumber","课号");
+        writer.addHeaderAlias("lname","课程名");
+        writer.addHeaderAlias("tnumber","教师号");
+        writer.addHeaderAlias("psgrade","平时分");
+        writer.addHeaderAlias("ksgrade","考试分");
+        writer.addHeaderAlias("totalgrade","总分");
+        writer.addHeaderAlias("gpa","绩点");
+        writer.addHeaderAlias("semester","学期");
+        writer.addHeaderAlias("gradeindex","分数比");
 
         //一次性写出list内的对象到excel，使用默认样式，强制输出标题
         writer.write(result,true);
 
         //设置浏览器响应格式
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");
-        String fileName= URLEncoder.encode("学生成绩","UTF-8");
+        String fileName= URLEncoder.encode("学生成绩单","UTF-8");
+        response.setHeader("Content-Disposition","attachment;filename="+fileName+".xlsx");
+
+        ServletOutputStream out= response.getOutputStream();
+        writer.flush(out,true);
+        out.close();
+        writer.close();
+    }
+
+    // 2. 导出选择某一节课的所有的学生信息,不涉及成绩：
+    //
+    @GetMapping("/exportClassStudents")
+    public void exportClassStudents(HttpServletResponse response,
+                                    @RequestParam("tnumber") Integer tnumber,
+                                    @RequestParam("lnumber") Integer lnumber) throws Exception{
+        List<Student> students=lessonchooseService.listClassStudents(tnumber,lnumber);
+
+        //在内存操作，写出到浏览器
+        ExcelWriter writer= ExcelUtil.getWriter(true);
+        //自定义标题列名
+        writer.addHeaderAlias("studentid","学号");
+        writer.addHeaderAlias("name","姓名");
+        writer.addHeaderAlias("sex","性别");
+        writer.addHeaderAlias("nativeplace","籍贯");
+        writer.addHeaderAlias("mobilephone","电话号码");
+        writer.addHeaderAlias("departName","院系");
+        writer.addHeaderAlias("status","状态");
+
+        //只输出定义别名的列
+        writer.setOnlyAlias(true);
+
+        //一次性写出list内的对象到excel，使用默认样式，强制输出标题
+        writer.write(students,true);
+
+        //设置浏览器响应格式
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");
+        String fileName= URLEncoder.encode("学生信息表","UTF-8");
         response.setHeader("Content-Disposition","attachment;filename="+fileName+".xlsx");
 
         ServletOutputStream out= response.getOutputStream();

@@ -20,11 +20,17 @@
       </template>
     </el-menu-item>
     <el-submenu index="2">
-      <template slot="title">
-        <i class="el-icon-menu"></i>
-        <span slot="title">系统管理</span>
-      </template>
-      <el-menu-item index="/teachermanage/class">
+        <template slot="title">
+          <i class="el-icon-menu"></i>
+          <span slot="title">系统管理</span>
+        </template>
+      <el-menu-item index="/teachermanage/myClass">
+        <template slot="title">
+          <i class="el-icon-s-release"></i>
+          <span slot="title">我的课程</span>
+        </template>
+      </el-menu-item>
+      <el-menu-item index="/teachermanage/RegistScore">
         <i class="el-icon-s-custom"></i>
         <span slot="title">成绩录入</span>
       </el-menu-item>

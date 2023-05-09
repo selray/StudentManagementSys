@@ -1,220 +1,210 @@
 <template>
   <div>
-
+    <!-- 输入搜索框-->
     <div style="margin: 10px 0">
-      <el-input suffix-icon="el-icon-search" style="width:200px" placeholder="请输入学号" v-model="snumber"></el-input>
-      <el-input suffix-icon="el-icon-search" style="width:200px" placeholder="请输入姓名" class="ml-5" v-model="sname"></el-input>
-      <el-input suffix-icon="el-icon-search" style="width:200px" placeholder="请输入课号" class="ml-5" v-model="lnumber"></el-input>
-      <el-button  class="ml-5" type="primary" @click="load">搜索</el-button>
-      <el-button  type="warning" @click="reset">重置</el-button>
-    </div>
-
-
-    <div style="margin: 10px 0">
+      <el-input style="width: 290px;" suffix-icon="el-icon-search" placeholder="请输入课程号" v-model="searchInfo.lnumber"></el-input>
+      <!--<el-input style="width: 290px ; margin-left: 5px" suffix-icon="el-icon-search" placeholder="请选择课程" v-model="searchInfo.className"></el-input>-->
       <template>
-        <el-select v-model="lname" clearable placeholder="请选择课程" @change="load">
+        <el-select v-model="searchInfo.lnumber" clearable placeholder="请选择课程" style="width: 290px ; margin-left: 5px">
           <el-option
-              v-for="item in uniqueData"
+              v-for="item in classOptions"
               :key="item.lnumber"
-              :value="item.lname">
+              :label="item.classname"
+              :value="item.lnumber">
           </el-option>
         </el-select>
       </template>
-      <!--      <el-button type="primary" @click="handleAdd">新增<i class="el-icon-circle-plus-outline"></i></el-button>-->
-      <!--      <el-popconfirm-->
-      <!--          class="ml-5"-->
-      <!--          confirm-button-text='确定'-->
-      <!--          cancel-button-text='我再想想'-->
-      <!--          icon="el-icon-info"-->
-      <!--          icon-color="red"-->
-      <!--          title="您确定批量删除这些数据吗？"-->
-      <!--          @confirm="delBatch"-->
-      <!--      >-->
-      <!--        <el-button type="danger" slot="reference">批量删除<i class="el-icon-remove-outline"></i></el-button>  &lt;!&ndash;slot="reference"使按钮显示&ndash;&gt;-->
-      <!--      </el-popconfirm>-->
-<!--      <el-upload action="http://localhost:9090/teacher/import" :show-file-list="false" accept=".xlsx" :on-success="handleExcelImportSucess" style="display: inline-block">-->
-<!--        <el-button type="primary" class="ml-5">导入<i class="el-icon-bottom"></i></el-button>-->
-<!--      </el-upload>-->
-      <el-button type="primary" @click="exp" class="ml-5">导出<i class="el-icon-top"></i></el-button>
+      <el-button style="margin-left: 5px; width: 100px" type="primary" @click="myClassDetail">搜索</el-button>
+      <el-button style="margin-left: 5px; width: 100px" type="danger" @click="reset">重置</el-button>
     </div>
 
-    <el-table :data="tableData" border stripe :header-cell-class-name="headerBg" @selection-change="handleSelectionChange">
-      <!--      <el-table-column type="selection" width="55"></el-table-column>  &lt;!&ndash;选择框&ndash;&gt;-->
-      <el-table-column prop="snumber" label="学生学号" width="140" align="center"></el-table-column>
-      <el-table-column prop="sname" label="学生姓名" width="140" align="center"></el-table-column>
-      <el-table-column prop="lnumber" label="课程号" width="140" align="center"></el-table-column>
-      <el-table-column prop="lname" label="课程名" width="140" align="center"></el-table-column>
-      <el-table-column prop="semester" label="学期" align="center"></el-table-column>
-      <el-table-column prop="psgrade" label="平时成绩" align="center"></el-table-column>
-      <el-table-column prop="ksgrade" label="考试成绩" align="center"></el-table-column>
-      <el-table-column prop="totalgrade" label="总成绩" align="center"></el-table-column>
-      <el-table-column prop="gpa" label="绩点" align="center"></el-table-column>
-      <el-table-column label="操作" width="150" align="center">
-        <template slot-scope="scope">
-          <el-button type="success" @click="handleEdit(scope.row)">编辑 <i class="el-icon-edit"></i></el-button>
-          <!--          <el-popconfirm-->
-          <!--              class="ml-5"-->
-          <!--              confirm-button-text='确定'-->
-          <!--              cancel-button-text='我再想想'-->
-          <!--              icon="el-icon-info"-->
-          <!--              icon-color="red"-->
-          <!--              title="您确定删除吗？"-->
-          <!--              @confirm="del(scope.row.deptid)"-->
-          <!--          >-->
-          <!--            <el-button type="danger" slot="reference">删除 <i class="el-icon-remove-outline"></i></el-button>-->
-          <!--          </el-popconfirm>-->
-        </template>
-      </el-table-column>
-    </el-table>
-    <div style="padding: 10px 0;">
+    <!-- 该名教师教授的所有的课程-->
+    <div class="grid-content bg-purple-light">
+      <el-table :data="myClassDetails" :header-cell-style="{background:'#ADD8E6',color:'#606266'}" border stripe header-cell-class-name="headerBg">
+        <el-table-column prop="lnumber" label="课程号" ></el-table-column>
+        <el-table-column prop="classname" label="课程名" ></el-table-column>
+        <el-table-column prop="lessontime" label="上课时间" ></el-table-column>
+        <el-table-column prop="classroom" label="上课地点" ></el-table-column>
+        <el-table-column prop="maxsize" label="总容量" ></el-table-column>
+        <el-table-column prop="currentsize" label="已选人数" ></el-table-column>
+        <el-table-column prop="" width="320px">
+          <template slot-scope="scope">
+            <el-button type="success" @click="getStudentDetails(scope.row)">查看选课学生<i class="el-icon-edit" style="margin-left: 2px"></i></el-button>
+            <el-button type="success" @click="exp(scope.row)">导出学生名单<i class="el-icon-circle-close" style="margin-left: 2px"></i></el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+
+    <!-- 分页选项-->
+    <div style="margin-top: 20px;">
       <el-pagination
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           :current-page="pageNum"
-          :page-sizes="[2,5,10,20]"
+          :page-sizes="[5, 10]"
           :page-size="pageSize"
           layout="total, sizes, prev, pager, next, jumper"
           :total="total">
       </el-pagination>
     </div>
 
-    <!--编辑框-->
-    <el-dialog title="班级信息" :visible.sync="dialogFormVisible" width="30%">
-      <el-form label-width="80px"  size="small">
-        <el-form-item label="学号" >
-          <el-input v-model="form.snumber" autocomplete="off" :disabled="true"></el-input>
-        </el-form-item>
-        <el-form-item label="姓名">
-          <el-input v-model="form.sname" autocomplete="off" :disabled="true"></el-input>
-        </el-form-item>
-        <el-form-item label="平时成绩">
-          <el-input v-model="form.psgrade" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="考试成绩">
-          <el-input v-model="form.ksgrade" autocomplete="off"></el-input>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="save">确 定</el-button>
+    <el-dialog title="选课名单" :visible.sync="dialogVisible" width="40%" >
+      <div class="grid-content bg-purple-light">
+        <el-table :data="myClassStudents" :header-cell-style="{background:'#ADD8E6',color:'#606266'}" border stripe header-cell-class-name="headerBg">
+          <el-table-column prop="studentid" label="学号" ></el-table-column>
+          <el-table-column prop="name" label="姓名" ></el-table-column>
+          <el-table-column prop="sex" label="性别" ></el-table-column>
+          <el-table-column prop="departName" label="学院" ></el-table-column>
+        </el-table>
       </div>
-    </el-dialog>
-  </div>
+      <!-- 分页选项-->
+      <div style="margin-top: 20px;">
+        <el-pagination
+            @size-change="handleSizeChange_1"
+            @current-change="handleCurrentChange_1"
+            :current-page="pageNum_1"
+            :page-sizes="[5, 10]"
+            :page-size="pageSize_1"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total_1">
+        </el-pagination>
+      </div>
 
+
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="dialogVisible = false">退出</el-button>
+      </span>
+    </el-dialog>
+
+
+  </div>
 </template>
 
 <script>
+import Vue from "vue";
+
 export default {
-  name: "Class",
+  name: "myClass",
   data(){
-    return {
-      tableData: [],
-      courseData:[],
+    return{
       total:0,
       pageNum:1,
-      pageSize:10,
-      snumber:"",
-      sname:"",
-      lnumber:"",
-      lname:"",
-      semester:"",
-      form:{},
-      dialogFormVisible:false,
-      multipleSelection: [],
-      headerBg:'headerBg'
+      pageSize:5,
+
+      total_1:0,
+      pageNum_1:1,
+      pageSize_1:5,
+
+      dialogVisible: false,
+      searchInfo: {
+        lnumber: "",
+        lname: ""
+      },
+      classOptions: [],
+      user:[],
+      myClassDetails: [],
+      // 选择指定课程的学生信息
+      myClassStudents: []
     }
   },
   created() {
-    this.load()
-  },
-  computed:{
-    uniqueData() {
-      const set = new Set();
-      return this.courseData.filter((item) => {
-        const key = `${item.lname}-${item.lnumber}`;
-        if (set.has(key)) {
-          // 如果集合中已经存在相同的key，则删除当前对象
-          return false;
-        } else {
-          set.add(key);
-          return true;
-        }
-      });
-    },
+    this.getUser();
+    this.myClassName();
+    this.myClassDetail();
   },
   methods: {
-    handleEdit(row){
-      this.form = JSON.parse(JSON.stringify(row)) //深拷贝，解决没点确定表格数据变化问题
-      // console.log(this.form)
-      this.dialogFormVisible=true
+    // 1. 获取当前登录教师信息
+    getUser(){
+      const data = JSON.parse(localStorage.getItem('loguserinfo'))
+      if (data) {
+        Vue.set(this, 'user', data);
+      }
     },
-    handleSelectionChange(val){
-      console.log(val)
-      this.multipleSelection=val
-    },
-    load(){
-      this.request.get("/lessonchoose/page",{
-        params:{
-          pageNum:this.pageNum,
-          pageSize:this.pageSize,
-          snumber:this.snumber,
-          sname:this.sname,
-          lnumber:this.lnumber,
-          lname:this.lname,
-          semester:this.semester
+    // 2. 下拉框功能，查询当前教师所有的课程名
+    myClassName(){
+      this.request.get("/sclass/page", {
+        params: {
+          pageNum:0,
+          pageSize:100,
+          tnumber: this.user.tnumber
         }
-      }).then(res=>{
-        // console.log(res)
-        // console.log(this.tableData)
-        this.tableData=res.records
-        // console.log("1==="+this.tableData + Date.now())
-        console.log(this.tableData)
-        this.total=res.total
-        if (this.courseData.length === 0) {
-          this.courseData = this.tableData;
+      }).then(response => {
+          this.classOptions = response.records;
+      })
+    },
+    // 3. 查询当前教师所教授的课程详细信息
+    myClassDetail(){
+      this.request.get("/sclass/page", {
+        params: {
+          pageNum: this.pageNum,
+          pageSize: this.pageSize,
+          tnumber: this.user.tnumber,
+          lnumber: this.searchInfo.lnumber,
+        }
+      }).then(response => {
+          this.myClassDetails = response.records;
+          console.log(this.myClassDetails);
+          this.total = response.total;
+      })
+    },
+    handleSizeChange(pageSize) {
+      console.log(`每页 ${pageSize} 条`);
+      this.pageSize = pageSize
+      this.myClassDetail();
+    },
+    handleCurrentChange(pageNum) {
+      console.log(`当前页: ${pageNum}`);
+      this.pageNum = pageNum
+      this.myClassDetail();
+    },
+    handleSizeChange_1(pageSize_1) {
+      console.log(`每页 ${pageSize_1} 条`);
+      this.pageSize_1 = pageSize_1
+      this.getStudentDetails();
+    },
+    handleCurrentChange_1(pageNum_1) {
+      console.log(`当前页: ${pageNum_1}`);
+      this.pageNum_1 = pageNum_1
+      this.getStudentDetails();
+    },
+    // 4. 弹窗关闭按钮功能绑定
+    handleClose(done) {
+      this.$confirm('确认关闭？')
+          .then(_ => {
+            done();
+          })
+          .catch(_ => {});
+    },
+    // 5. 相应课程所选学生信息：
+    getStudentDetails(data){
+      this.dialogVisible = true
+      this.request.get("/lessonchoose/getClassStudents", {
+        params: {
+          pageNum: this.pageNum,
+          pageSize: this.pageSize,
+          tnumber: this.user.tnumber,
+          lnumber: data.lnumber
+        }
+      }).then(response => {
+        if (response.code == "200"){
+          this.myClassStudents = response.data.records;
+          this.total_1 = response.data.total;
         }
       })
     },
-    save(){
-      this.request.post("/lessonchoose",this.form).then(res=>{
-        if(res){
-          this.$message.success("保存成功")
-          this.dialogFormVisible=false
-          this.load()
-        }else {
-          this.$message.error("保存失败")
-        }
-      })
+    exp(data){
+      let tnumber = this.user.tnumber;
+      window.open('http://localhost:9090/lessonchoose/exportClassStudents?tnumber='+ tnumber + '&lnumber=' + data.lnumber);
     },
     reset(){
-      this.snumber=""
-      this.sname=""
-      this.lnumber=""
-      this.lname=""
-      this.semester=""
-      this.load()
-    },
-    handleSizeChange(pageSize){
-      console.log(pageSize)
-      this.pageSize=pageSize
-      this.load()
-    },
-    handleCurrentChange(pageNum){
-      console.log(pageNum)
-      this.pageNum=pageNum
-      this.load()
-    },
-    exp(){
-      // 构建URL参数字符串
-      window.open(`http://124.71.166.37:9090/lessonchoose/export?tableData=${encodeURIComponent(JSON.stringify(this.tableData))}`)
+      this.searchInfo = {};
+      this.myClassDetail();
     }
   }
-
 }
 </script>
 
-<style>
-.headerBg{
-  background: #eee !important;
-}
+<style scoped>
+
 </style>

@@ -23,10 +23,11 @@ const routes = [
     redirect: "/teachermanage/home",
     children:[
       {path: 'home', name: '首页' , component: () => import('@/views/teacher/TeacherHome.vue')},
-      {path: 'class', name: '成绩录入' , component: () => import('@/views/teacher/TeacherClass.vue')},
+      {path: 'RegistScore', name: '成绩录入' , component: () => import('@/views/teacher/TeacherRegistScore.vue')},
       {path:'person', name: '个人信息', component:() => import('@/views/teacher/TeacherPerson.vue')},
       {path:'file', name: '文件管理', component:() => import('@/views/File.vue')},
-      {path:'classtable', name: '课表查询', component:() => import('@/views/teacher/TeacherClassTable.vue')}
+      {path:'classtable', name: '课表查询', component:() => import('@/views/teacher/TeacherClassTable.vue')},
+      {path:'myClass', name: '我的课程', component:() => import('@/views/teacher/TeacherClass.vue')},
     ]
   },
 

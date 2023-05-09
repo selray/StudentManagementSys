@@ -1,6 +1,7 @@
 package com.example.springboot.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
@@ -41,7 +42,8 @@ public class Student implements Serializable {
 
     private String deptid;
 
-//    private String sdept;
+    @TableField(exist = false)
+    private String departName;
 
     private String status;
 

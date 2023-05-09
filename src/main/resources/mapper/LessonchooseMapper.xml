@@ -1,5 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.springboot.mapper.LessonchooseMapper">
-
+    <select id="getClassStudents" resultType="com.example.springboot.entity.Student">
+        select s.studentid, s.name, s.sex, d.deptname  as departName
+        from lessonchoose
+        join student s on lessonchoose.snumber = s.studentid
+        join profession p on s.Sprofession = p.Pname
+        join department d on p.Anumber = d.deptid
+        where lessonchoose.Tnumber=#{tnumber} and lessonchoose.Lnumber=#{lnumber}
+    </select>
+    <select id="listClassStudents" resultType="com.example.springboot.entity.Student">
+        select s.*, d.deptname  as departName
+        from lessonchoose
+        join student s on lessonchoose.snumber = s.studentid
+        join profession p on s.Sprofession = p.Pname
+        join department d on p.Anumber = d.deptid
+        where lessonchoose.Tnumber=#{tnumber} and lessonchoose.Lnumber=#{lnumber}
+    </select>
 </mapper>
