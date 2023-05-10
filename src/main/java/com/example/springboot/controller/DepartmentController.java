@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.springboot.entity.Student;
-import com.example.springboot.entity.department;
+import com.example.springboot.entity.Department;
 import com.example.springboot.service.DepartmentService;
 import com.example.springboot.utils.TokenUtils;
 import org.springframework.web.bind.annotation.*;
@@ -46,18 +46,18 @@ public class DepartmentController {
 
     //增加
     @PostMapping
-    public boolean save(@RequestBody department dep){
+    public boolean save(@RequestBody Department dep){
         //新增或者更新
         return depService.saveOrUpdate(dep);
     }
     //    查询所有数据
     @GetMapping
-    public List<department> findAll(){
+    public List<Department> findAll(){
         return depService.list();
     }
     //    删除
     @GetMapping("/{id}")
-    public List<department> findOne(@PathVariable Integer id){
+    public List<Department> findOne(@PathVariable Integer id){
         return depService.list();
     }
     @DeleteMapping("/{id}")
@@ -86,14 +86,14 @@ public class DepartmentController {
 //    }
     //mybatis plus分页查询
     @GetMapping("/page")  //接口路径,多条件查询
-    public IPage<department> findPage(@RequestParam Integer pageNum,
-                                        @RequestParam Integer pageSize,
-                                       @RequestParam(defaultValue = "") String deptid,
-                                        @RequestParam(defaultValue = "") String deptname,
-                                       @RequestParam(defaultValue = "") String address,
-                                       @RequestParam(defaultValue = "") String phonecode){
-        IPage<department> page = new Page<>(pageNum,pageSize);
-        QueryWrapper<department> queryWrapper = new QueryWrapper<>();
+    public IPage<Department> findPage(@RequestParam Integer pageNum,
+                                      @RequestParam Integer pageSize,
+                                      @RequestParam(defaultValue = "") String deptid,
+                                      @RequestParam(defaultValue = "") String deptname,
+                                      @RequestParam(defaultValue = "") String address,
+                                      @RequestParam(defaultValue = "") String phonecode){
+        IPage<Department> page = new Page<>(pageNum,pageSize);
+        QueryWrapper<Department> queryWrapper = new QueryWrapper<>();
         if(!"".equals(deptid)){
             queryWrapper.like("deptid",deptid);
         }
@@ -122,7 +122,7 @@ public class DepartmentController {
 //    导出接口
     @GetMapping("/export")
     public void export(HttpServletResponse response) throws Exception{
-        List<department> list = depService.list();
+        List<Department> list = depService.list();
         //从数据库中查询出所有数据
         ExcelWriter writer = ExcelUtil.getWriter(true);
         //在内存操作，写出到浏览器
@@ -155,7 +155,7 @@ public class DepartmentController {
         InputStream inputStream = file.getInputStream();
         ExcelReader reader = ExcelUtil.getReader(inputStream);
         //通过javabin的方式读取javabin内的对象，但是要求表头必须是中文，且和javabean中的属性要对应起来
-        List<department> list = reader.readAll(department.class);
+        List<Department> list = reader.readAll(Department.class);
         System.out.println(list);
 
 

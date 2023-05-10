@@ -5,6 +5,7 @@ import cn.hutool.log.Log;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.springboot.common.Constants;
+import com.example.springboot.controller.dto.ManagerDTO;
 import com.example.springboot.controller.dto.UserDTO;
 import com.example.springboot.entity.Manager;
 import com.example.springboot.exception.ServiceException;
@@ -26,15 +27,15 @@ public class ManagerServiceImpl extends ServiceImpl<ManagerMapper, Manager> impl
 
     private static final Log LOG = Log.get();
     @Override
-    public UserDTO login(UserDTO userDTO) {
+    public ManagerDTO login(ManagerDTO managerDTO) {
         //去数据库查询的实体类,查找是否有响应数据
-        Manager one = getUserInfo(userDTO);
+        Manager one = getUserInfo(managerDTO);
         if(one != null) {
-            BeanUtil.copyProperties(one,userDTO,true);
+            BeanUtil.copyProperties(one,managerDTO,true);
             //设置token
             String token = TokenUtils.genToken(one.getMnumber().toString(),one.getMpassword());
-            userDTO.setToken(token);
-            return  userDTO;
+            managerDTO.setToken(token);
+            return  managerDTO;
         }else {
             throw new ServiceException(Constants.CODE_600,"用户名或密码错误");
         }
@@ -42,11 +43,11 @@ public class ManagerServiceImpl extends ServiceImpl<ManagerMapper, Manager> impl
 
 
     }
-    private Manager getUserInfo(UserDTO userDTO){
+    private Manager getUserInfo(ManagerDTO managerDTO){
         QueryWrapper<Manager> queryWrapper= new QueryWrapper<>();
         //校验输入的信息是否在数据库中，成功就返回用户信息以便于浏览器后面处理
-        queryWrapper.eq("musername",userDTO.getUsername());
-        queryWrapper.eq("mpassword",userDTO.getPassword());
+        queryWrapper.eq("musername",managerDTO.getUsername());
+        queryWrapper.eq("mpassword",managerDTO.getPassword());
 
         Manager one;
         try{

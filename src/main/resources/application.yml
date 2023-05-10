@@ -24,6 +24,8 @@ mybatis:
 mybatis-plus:
     configuration:
         log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+        type-handlers:
+            string: com.example.demo.MD5TypeHandler
 
 files:
     upload:

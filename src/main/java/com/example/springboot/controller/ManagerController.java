@@ -1,10 +1,15 @@
 package com.example.springboot.controller;
 
 import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.example.springboot.common.Constants;
 import com.example.springboot.common.Result;
+import com.example.springboot.config.interceptor.MD5TypeHandler;
+import com.example.springboot.controller.dto.ManagerDTO;
 import com.example.springboot.controller.dto.UserDTO;
 import com.example.springboot.entity.Manager;
+import com.example.springboot.entity.Student;
+import com.example.springboot.entity.Teacher;
 import com.example.springboot.service.IManagerService;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,16 +41,21 @@ public class ManagerController {
 
 
     @PostMapping("/login")
-    public Result login(@RequestBody UserDTO userDTO){
+    public Result login(@RequestBody ManagerDTO managerDTO){
         //新增或者更新
-        String username = userDTO.getUsername();
-        String password = userDTO.getPassword();
+        String username = managerDTO.getUsername();
+        String password = managerDTO.getPassword();
         if(StrUtil.isBlank(username) || StrUtil.isBlank(password)){
             //校验字符串是否是空
             return  Result.error(Constants.CODE_400,"参数错误");
         }
-        UserDTO dto= managerService.login(userDTO);
+        String encryptedPassword = encryptPassword(password);
+        managerDTO.setPassword(encryptedPassword);
+        ManagerDTO dto= managerService.login(managerDTO);
         return Result.success(dto);
+    }public String encryptPassword(String password) {
+        MD5TypeHandler md5TypeHandler = new MD5TypeHandler();
+        return md5TypeHandler.md5(password);
     }
     //删除
     @DeleteMapping("/{id}")
@@ -65,20 +75,18 @@ public class ManagerController {
     public List<Manager> findAll(){
         return managerService.list();
     }
-
     //根据id查询
     @GetMapping("/{id}")
     public Manager findOne(@PathVariable Integer id){
         return managerService.getById(id);
     }
 
-    //分页查询
-//    @GetMapping("/page")
-//    public Page<Manager> findPage(@RequestParam Interger pageNum,
-//        @RequestParam Interger pageSize){
-//        QueryWrapper<department> queryWrapper = new QueryWrapper<>();
-//        //queryWrapper.orderByDesc("id");
-//        return managerService.page(new Page<>(pageNum,pageSize));
-//    }
+    @GetMapping("/mnumber/{mnumber}")
+    public Result findeOne(@PathVariable String  mnumber){
+        QueryWrapper<Manager> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("Mnumber",mnumber);
+        Manager manager = managerService.getOne(queryWrapper);
+        return Result.success(manager);
+    }
 }
 

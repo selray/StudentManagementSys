@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.example.springboot.mapper.departmentMapper">
+<mapper namespace="com.example.springboot.mapper.DepartmentMapper">
 
 <!--    自定义更新操作    -->
     <update id="update">

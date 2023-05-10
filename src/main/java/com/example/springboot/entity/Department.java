@@ -9,7 +9,7 @@ import lombok.ToString;
 @Data
 @TableName(value = "department")
 @ToString
-public class department {
+public class Department {
     @TableId(type = IdType.AUTO)
     //@TableField(value = "dept_id") //因为名称不一致可以用这个形式
     private String deptid; //主键需要tableid

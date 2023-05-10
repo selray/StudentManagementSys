@@ -2,13 +2,13 @@ package com.example.springboot.service.impl;
 
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.example.springboot.entity.department;
-import com.example.springboot.mapper.departmentMapper;
+import com.example.springboot.entity.Department;
+import com.example.springboot.mapper.DepartmentMapper;
 import com.example.springboot.service.DepartmentService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class DepartmentServiceImpl extends ServiceImpl<departmentMapper, department> implements DepartmentService {
+public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Department> implements DepartmentService {
 
 
 //    @Override

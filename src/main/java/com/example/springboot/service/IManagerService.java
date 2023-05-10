@@ -1,6 +1,7 @@
 package com.example.springboot.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.example.springboot.controller.dto.ManagerDTO;
 import com.example.springboot.controller.dto.UserDTO;
 import com.example.springboot.entity.Manager;
 
@@ -14,5 +15,5 @@ import com.example.springboot.entity.Manager;
  */
 public interface IManagerService extends IService<Manager> {
 
-    UserDTO login(UserDTO userDTO);
+    ManagerDTO login(ManagerDTO managerDTO);
 }

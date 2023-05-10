@@ -5,16 +5,20 @@ import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.example.springboot.entity.Lesson;
-import com.example.springboot.entity.Student;
+import com.example.springboot.entity.*;
+import com.example.springboot.mapper.DepartmentMapper;
+import com.example.springboot.mapper.LessonMapper;
 import com.example.springboot.service.ILessonService;
 import com.example.springboot.utils.TokenUtils;
+import io.swagger.models.auth.In;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,6 +36,8 @@ public class LessonController {
 
     @Resource
     private ILessonService lessonService;
+    @Resource
+    private DepartmentMapper departmentMapper;
 
     //新增或更新
     @PostMapping
@@ -97,7 +103,54 @@ public class LessonController {
 
         return lessonService.page(page,queryWrapper);
     }
+    @GetMapping("/pagewithname")
+    public IPage<LessonAndName> findePage(@RequestParam Integer pageNum,
+                                         @RequestParam Integer pageSize,
+                                         @RequestParam(defaultValue = "") String lnumber,
+                                         @RequestParam(defaultValue = "") String lname,
+                                         @RequestParam(defaultValue = "") String lcredit,
+                                         @RequestParam(defaultValue = "") String lcollege
+                                         ){
+        IPage<LessonAndName> page;
+        QueryWrapper<Lesson> queryWrapper = new QueryWrapper<>();
+        if(!"".equals(lnumber)){
+            queryWrapper.like("lnumber",lnumber);
+        }
+        if(!"".equals(lname)){
+            queryWrapper.like("lname",lname);
+        }
+        if(!"".equals(lcredit)){
+            queryWrapper.like("lcredit",lcredit);
+        }
+        if(!"".equals(lcollege)){
+            queryWrapper.like("lcollege",lcollege);
+        }
+        List<LessonAndName> result = new ArrayList<>();
+        List<Lesson>lessons=lessonService.list(queryWrapper);
+        Department department;
+        for (Lesson o : lessons) {
+            QueryWrapper<Department> DepartmentQueryWrapper = new QueryWrapper<>();
+            DepartmentQueryWrapper.eq("deptid", o.getLcollege());
 
+            department =departmentMapper.selectOne(DepartmentQueryWrapper);
+            LessonAndName lessonAndName = new LessonAndName(o, department.getDeptname());
+
+            result.add(lessonAndName);
+        }
+        page = listToPage(result,pageNum,pageSize);
+        return page;
+    }
+    public static IPage listToPage(List list, int pageNum, int pageSize){
+        List pageList = new ArrayList<>();
+        int curIdx = pageNum > 1 ? (pageNum - 1) * pageSize : 0;
+        for (int i = 0; i < pageSize && curIdx + i < list.size(); i++) {
+            pageList.add(list.get(curIdx + i));
+        }
+        IPage page = new Page<>(pageNum, pageSize);
+        page.setRecords(pageList);
+        page.setTotal(list.size());
+        return page;
+    }
     @GetMapping("/export")
     public void export(HttpServletResponse response) throws Exception{
         List<Lesson> list = lessonService.list();

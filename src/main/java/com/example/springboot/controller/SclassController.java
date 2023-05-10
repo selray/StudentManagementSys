@@ -5,14 +5,13 @@ import cn.hutool.poi.excel.ExcelWriter;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.example.springboot.entity.Lesson;
-import com.example.springboot.entity.Lessonchoose;
-import com.example.springboot.entity.Sclass;
-import com.example.springboot.entity.SclassAndName;
+import com.example.springboot.entity.*;
 import com.example.springboot.mapper.LessonMapper;
 import com.example.springboot.mapper.SclassMapper;
+import com.example.springboot.mapper.TeacherMapper;
 import com.example.springboot.service.ILessonchooseService;
 import com.example.springboot.service.ISclassService;
+import org.apache.ibatis.annotations.Select;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -46,12 +45,63 @@ public class SclassController {
 
     @Resource
     private LessonMapper lessonMapper;
+    @Resource
+    private TeacherMapper teacherMapper;
 
     //新增或更新
-    @PostMapping
+    @PostMapping("/new")
+    public int creat(@RequestBody Sclass sclass){//新增
+
+        QueryWrapper<Lesson> queryWrapper3 = new QueryWrapper<>();
+        queryWrapper3.eq("lnumber", sclass.getLnumber());
+        Lesson findlesson=lessonMapper.selectOne(queryWrapper3);
+        if(findlesson==null){return -3;}
+
+        QueryWrapper<Teacher>queryWraper4=new QueryWrapper<>();
+        queryWraper4.eq("tnumber",sclass.getTnumber());
+        Teacher findteacher= teacherMapper.selectOne(queryWraper4);;
+        if(findteacher==null) {return -4;}
+
+        QueryWrapper<Sclass> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("tnumber", sclass.getTnumber());
+        queryWrapper.eq("lnumber", sclass.getLnumber());
+        queryWrapper.eq("semester", sclass.getSemester());
+        Sclass findsclass=sclassMapper.selectOne(queryWrapper);
+        if(findsclass!=null){return -1;}
+
+        QueryWrapper<Sclass> queryWrapper2 = new QueryWrapper<>();
+        queryWrapper2.eq("lessontime", sclass.getLessontime());
+        queryWrapper2.eq("classroom", sclass.getClassroom());
+        queryWrapper2.eq("semester", sclass.getSemester());
+        findsclass=sclassMapper.selectOne(queryWrapper2);
+        if (findsclass != null) {return -2;}
+
+        else {
+            Sclass newsclass = new Sclass();
+            newsclass.setTnumber(sclass.getTnumber());
+            newsclass.setLnumber(sclass.getLnumber());
+            newsclass.setSemester(sclass.getSemester());
+            newsclass.setLessontime(sclass.getLessontime());
+            newsclass.setClassroom(sclass.getClassroom());
+            newsclass.setMaxsize(sclass.getMaxsize());
+            newsclass.setCurrentsize(0);
+            sclassService.save(newsclass);
+            return 0;
+        }
+    }
+    @PostMapping ("/save")
     public boolean save(@RequestBody Sclass sclass){
-        //新增或者更新
-        return sclassService.saveOrUpdate(sclass);
+        QueryWrapper<Sclass> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("tnumber", sclass.getTnumber());
+        queryWrapper.eq("lnumber", sclass.getLnumber());
+        queryWrapper.eq("semester", sclass.getSemester());
+        Sclass sclass1 = sclassMapper.selectOne(queryWrapper);
+        sclass1.setLessontime(sclass.getLessontime());
+        sclass1.setClassroom(sclass.getClassroom());
+        sclass1.setMaxsize(sclass.getMaxsize());
+        sclass1.setCurrentsize(sclass.getCurrentsize());
+        sclassService.remove(queryWrapper);
+        return  sclassService.save(sclass1);
     }
 
     //删除
@@ -219,7 +269,7 @@ public class SclassController {
 
         //设置浏览器响应的格式
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");
-        String fileName= URLEncoder.encode("学院表格信息","UTF-8");
+        String fileName= URLEncoder.encode("开课表格信息","UTF-8");
         //输出文件名称
         response.setHeader("Content-Disposition","attachment;filename="+fileName+".xlsx");
 

@@ -1,21 +1,17 @@
 <template>
   <div>
     <div style="margin: 10px 0">
-      <el-input style="width: 200px" placeholder="请输入学院号" suffix-icon="el-icon-search" v-model="deptid"></el-input>
-      <el-input style="width: 200px" placeholder="请输入学院名" class="ml-5" suffix-icon="el-icon-message" v-model="deptname"></el-input>
-      <el-input style="width: 200px" placeholder="请输入地址" class="ml-5" suffix-icon="el-icon-position" v-model="address"></el-input>
-      <el-input style="width: 200px" placeholder="请输入联系方式" class="ml-5" suffix-icon="el-icon-position" v-model="phonecode"></el-input>
+      <el-input style="width: 200px" placeholder="请输入教师号" suffix-icon="el-icon-search" v-model="tnumber"></el-input>
+      <el-input style="width: 200px" placeholder="请输入姓名" class="ml-5" suffix-icon="el-icon-message" v-model="tname"></el-input>
       <el-button class="ml-5" type="primary" @click="load">搜索</el-button>
       <el-button type="warning" @click="reset">重置</el-button>
     </div>
-
     <div style="margin: 10px 0">
       <el-button type="primary" @click="handleAdd">新增<i class="el-icon-circle-plus-outline"></i></el-button>
       <el-popconfirm
           class="ml-5"
           confirm-button-text="确认"
           cancel-button-text="取消"
-          :icon="InfoFilled"
           icon-color="#626AEF"
           title="是否批量删除?"
           @confirm="delBatch"
@@ -23,10 +19,10 @@
       >
         <el-button type="danger" slot="reference">批量删除<i class = "el-icon-remove-outline"></i></el-button>
       </el-popconfirm>
-        <el-upload action="http://124.71.166.37:9090/department/import" :show-file-list="false" accept="xlsx" :on-success="handleExcelImportSuccess" style="display: inline-block">
-      <el-button type="primary" class="ml-5">导入<i class = "el-icon-bottom"></i></el-button>
-        </el-upload>
-          <el-button type="primary" @click="exp" class="ml-5">导出<i class = "el-icon-top"></i></el-button>
+      <el-upload action="http://124.71.166.37:9090/teacher/import" :show-file-list="false" accept="xlsx" :on-success="handleExcelImportSuccess" style="display: inline-block">
+        <el-button type="primary" class="ml-5">导入<i class = "el-icon-bottom"></i></el-button>
+      </el-upload>
+      <el-button type="primary" @click="exp" class="ml-5">导出<i class = "el-icon-top"></i></el-button>
     </div>
 
     <el-table :data="tableData" border stripe header-cell-class-name="headerBg" @selection-change="handleSelectionChange">
@@ -34,15 +30,15 @@
       <el-table-column type="selection" width="55" />
 
 
-      <el-table-column prop="deptid" label="学院号" width="140">
+      <el-table-column prop="tnumber" label="工号" width="250">
       </el-table-column>
-      <el-table-column prop="deptname" label="学院名称" width="120">
+      <el-table-column prop="tname" label="姓名" width="250">
       </el-table-column>
-      <el-table-column prop="address" label="地址">
+      <el-table-column prop="tsex" label="性别" width="120">
       </el-table-column>
-      <el-table-column prop="phonecode" label="联系方式">
+      <el-table-column prop="tstatus" label="职位" width="250">
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column label="操作"width="313">
         <template slot-scope="scope">
           <el-button type="success" @click="handleEdit(scope.row)">编辑<i class="el-icon-edit"></i></el-button>
           <el-popconfirm
@@ -52,7 +48,7 @@
               :icon="InfoFilled"
               icon-color="#626AEF"
               title="是否删除?"
-              @confirm="del(scope.row.deptid)"
+              @confirm="del(scope.row.tnumber)"
               @cancel="cancelEvent"
           >
             <template #reference>
@@ -81,19 +77,25 @@
 
     </div>
     <!--        “新建”弹窗-->
-    <el-dialog title="学院信息" :visible.sync="dialogFormVisible" width="30%" >
+    <el-dialog title="教师信息" :visible.sync="dialogFormVisible" width="30%" >
       <el-form label-width="80px" size="small">
-        <el-form-item label="学院号">
-          <el-input v-model="form.deptid" autocomplete="off" />
+        <el-form-item label="教师号">
+          <el-input v-model="form.tnumber" autocomplete="off" />
         </el-form-item>
-        <el-form-item label="学院名">
-          <el-input v-model="form.deptname" autocomplete="off" />
+        <el-form-item label="姓名">
+          <el-input v-model="form.tname" autocomplete="off" />
         </el-form-item>
-        <el-form-item label="地址">
-          <el-input v-model="form.address" autocomplete="off" />
+        <el-form-item label="性别">
+          <el-input v-model="form.tsex" autocomplete="off" />
         </el-form-item>
-        <el-form-item label="联系方式">
-          <el-input v-model="form.phonecode" autocomplete="off" />
+        <el-form-item label="职位">
+          <el-input v-model="form.tstatus" autocomplete="off" />
+        </el-form-item>
+        <el-form-item label="账户">
+          <el-input v-model="form.tusername" autocomplete="off" />
+        </el-form-item>
+        <el-form-item label="密码">
+          <el-input v-model="form.tpassword" autocomplete="off" />
         </el-form-item>
       </el-form>
       <template #footer>
@@ -117,16 +119,16 @@ export default {
       total: 0,
       pageNum: 1,
       pageSize: 10,
-
-      deptname: "",
-      deptid: "",
-      address: "",
-      phonecode: "",
+      tnumber: "",
+      tname: "",
+      tsex: "",
+      tstatus: "",
+      tusername:"",
+      tpassword:"",
       dialogFormVisible: false,
       multipleSelection: [],
       form: {},
       headerBg: 'headerBg'
-
     }
   },
   created() {
@@ -134,24 +136,16 @@ export default {
   },
   methods:{
     load(){
-      //请求分页查询数据
-      //通过axios向后台请求参数
-      // fetch("http://124.71.166.37:9090/department/page?pageNum="+this.pageNum+"&pageSize="+this.pageSize+"&deptname="+this.deptname)
-      //     .then(res => res.json()).then(res =>{
-      //   console.log(res)
-      //   this.tableData = res.data
-      //   this.total = res.total
-      // })
-
-      //通过request.js中的baseurl已经将前面的http://124.71.166.37:9090部分省略了
-      this.request.get("/department/page",{
+      this.request.get("/teacher/page",{
         params:{
           pageNum: this.pageNum,
           pageSize: this.pageSize,
-          deptid: this.deptid,
-          deptname: this.deptname,
-          address: this.address,
-          phonecode: this.phonecode
+          tnumber:this.tnumber,
+          tname:this.tname,
+          tsex: this.tsex,
+          tstatus:this.tstatus,
+          tusername:this.tusername,
+          tpassword:this.tpassword
         }
       })
           .then(res => {
@@ -163,7 +157,7 @@ export default {
     },
     save(){
       //发送数据到后端
-      this.request.post("/department",this.form)
+      this.request.post("/teacher",this.form)
           .then(res => {
             if(res){
               this.$message.success("保存成功")
@@ -179,12 +173,12 @@ export default {
       this.form = {}
     },
     handleEdit(row){
-      this.form = row //将数据赋予弹窗
+      this.form = JSON.parse(JSON.stringify(row)); //将数据赋予弹窗
       this.dialogFormVisible = true //显示弹窗
 
     },
     del(id){
-      this.request.delete("/department/" + id)
+      this.request.delete("/teacher/" + id)
           .then(res => {
             if(res){
               this.$message.success("删除成功")
@@ -194,13 +188,9 @@ export default {
             }
           })
     },
-    handleSelectionChange(val){
-      console.log(val)
-      this.multipleSelection = val
-    },
     delBatch(){
-      let ids = this.multipleSelection.map(v => v.deptid)   //把一个对象的数组变成一个纯数组
-      this.request.post("/department/del/batch",ids).then(res => {
+      let ids = this.multipleSelection.map(v => v.tnumber)   //把一个对象的数组变成一个纯数组
+      this.request.post("/teacher/del/batch",ids).then(res => {
         if(res){
           this.$message.success("批量删除成功")
           this.load()
@@ -209,11 +199,13 @@ export default {
         }
       })
     },
+    handleSelectionChange(val){
+      console.log(val)
+      this.multipleSelection = val
+    },
     reset(){
-      this.deptid = ""
-      this.deptname = ""
-      this.address = ""
-      this.phonecode = ""
+      this.tnumber = ""
+      this.tname = ""
       this.load()
     },
     handleSizeChange(pageSize){
@@ -225,7 +217,7 @@ export default {
       this.load()
     },
     exp(){
-      window.open("http://124.71.166.37:9090/department/export")
+      window.open("http://localhost:9090/teacher/export")
     },
     handleExcelImportSuccess(){
       this.$message.success("文件上传成功！")

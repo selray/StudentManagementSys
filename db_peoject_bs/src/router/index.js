@@ -8,13 +8,17 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/manage',
-    component: () => import("@/views/Manage.vue"),
+    component: () => import("@/views/manager/Manage.vue"),
     redirect: "/manage/home",
     children:[
-      {path: 'user', name: '首页' , component: () => import('@/views/User.vue')},
-      {path: 'home', name: '用户管理' , component: () => import('@/views/Home.vue')},
-      {path:'person', name: '个人信息', component:() => import('@/views/Person.vue')},
-      {path:'file', name: '文件管理', component:() => import('@/views/File.vue')}
+      {path: 'home', name: '主页' , component: () => import('@/views/Home.vue')},
+      {path: 'user', name: '学院信息管理' , component: () => import('@/views/manager/DepartmentManage.vue')},
+      {path:'information', name: '管理员个人信息', component:() => import('@/views/manager/ManagerInformation.vue')},
+      {path:'file', name: '文件管理', component:() => import('@/views/manager/File.vue')},
+      {path:'student',name:'学生信息管理',component:() => import('@/views/manager/StudentManage.vue')},
+      {path:'teacher',name:'教师信息管理',component:() => import('@/views/manager/TeatherManage.vue')},
+      {path:'lesson',name:'课程信息', component:()=>import ('@/views/manager/LessonManage.vue')},
+      {path:'sclass',name:'开课信息',component : () => import('@/views/manager/SclassManage.vue')}
     ],
   },
   {
@@ -25,7 +29,7 @@ const routes = [
       {path: 'home', name: '首页' , component: () => import('@/views/teacher/TeacherHome.vue')},
       {path: 'RegistScore', name: '成绩录入' , component: () => import('@/views/teacher/TeacherRegistScore.vue')},
       {path:'person', name: '个人信息', component:() => import('@/views/teacher/TeacherPerson.vue')},
-      {path:'file', name: '文件管理', component:() => import('@/views/File.vue')},
+      {path:'file', name: '文件管理', component:() => import('@/views/manager/File.vue')},
       {path:'classtable', name: '课表查询', component:() => import('@/views/teacher/TeacherClassTable.vue')},
       {path:'myClass', name: '我的课程', component:() => import('@/views/teacher/TeacherClass.vue')},
     ]
