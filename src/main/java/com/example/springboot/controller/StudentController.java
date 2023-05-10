@@ -10,10 +10,7 @@ import com.example.springboot.common.Constants;
 import com.example.springboot.common.Result;
 import com.example.springboot.config.interceptor.MD5TypeHandler;
 import com.example.springboot.controller.dto.UserDTO;
-import com.example.springboot.entity.Lesson;
-import com.example.springboot.entity.Lessonchoose;
-import com.example.springboot.entity.Manager;
-import com.example.springboot.entity.Student;
+import com.example.springboot.entity.*;
 import com.example.springboot.mapper.StudentMapper;
 import com.example.springboot.service.ILessonchooseService;
 import com.example.springboot.service.IStudentService;
@@ -38,8 +35,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/student")
 public class StudentController {
-@Autowired
-private StudentMapper studentmapper;
+    @Autowired
+    private StudentMapper studentmapper;
     @Resource
     private IStudentService studentService;
     @Resource
@@ -80,13 +77,32 @@ private StudentMapper studentmapper;
     }
 
     //新增或更新
-    @PostMapping
+    @PostMapping("/update")
     public boolean save(@RequestBody Student student){
-        //新增或者更新
-        //System.out.println("测试传入student的数据=================="+student.getName()+"  "+student.getAvatarurl());
+        QueryWrapper<Student> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("studentid", student.getStudentid());
+        Student objectstudent=studentmapper.selectOne(queryWrapper);
+        objectstudent.setStudentid(student.getStudentid());
+        objectstudent.setName(student.getName());
+        objectstudent.setSex(student.getSex());
+        objectstudent.setMobilephone(student.getMobilephone());
+        objectstudent.setSprofession(student.getSprofession());
+        objectstudent.setLogn(student.getLogn());
+        if(student.getPswd().equals(objectstudent.getPswd()))
+        {
+            objectstudent.setPswd(student.getPswd());
+        }
+        else objectstudent.setPassword(student.getPswd());
+
+
+
+        return studentService.saveOrUpdate(objectstudent);
+    }
+    @PostMapping("/save")
+    public boolean update(@RequestBody Student student){
+        student.setPassword(encryptPassword(student.getPswd()));
         return studentService.saveOrUpdate(student);
     }
-
     //删除
 //    @DeleteMapping("/{id}")
 //    public boolean  delete(@PathVariable Integer id){
@@ -105,7 +121,7 @@ private StudentMapper studentmapper;
 
     @PostMapping("/del/batch")
     public boolean  deleteBatch(@RequestBody List<Integer> ids){
-        
+
         return studentService.removeByIds(ids);
     }
 

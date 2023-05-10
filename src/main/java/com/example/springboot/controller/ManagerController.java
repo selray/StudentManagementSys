@@ -10,7 +10,9 @@ import com.example.springboot.controller.dto.UserDTO;
 import com.example.springboot.entity.Manager;
 import com.example.springboot.entity.Student;
 import com.example.springboot.entity.Teacher;
+import com.example.springboot.mapper.ManagerMapper;
 import com.example.springboot.service.IManagerService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -28,15 +30,25 @@ import java.util.List;
 @RequestMapping("/manager")
 public class ManagerController {
 
-
+@Autowired
+    ManagerMapper managerMapper;
     @Resource
     private IManagerService managerService;
 
     //新增或更新
     @PostMapping
     public boolean save(@RequestBody Manager manager){
+        QueryWrapper<Manager> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("Mnumber", manager.getMnumber());
+        Manager objectmanager=managerMapper.selectOne(queryWrapper);
+        objectmanager.setMusername(manager.getMusername());
+        if(manager.getMpassword().equals(objectmanager.getMpassword()))
+        {
+            objectmanager.setMpassword(manager.getMpassword());
+        }
+        else objectmanager.setPassword(manager.getMpassword());
         //新增或者更新
-        return managerService.saveOrUpdate(manager);
+        return managerService.saveOrUpdate(objectmanager);
     }
 
 

@@ -51,7 +51,7 @@ public class Student implements Serializable {
 
     private String logn;
     private String avatarurl;
- @TableField(value = "pswd", typeHandler = MD5TypeHandler.class)
+// @TableField(value = "pswd", typeHandler = MD5TypeHandler.class)
     private String pswd;
     private String Sprofession;
 

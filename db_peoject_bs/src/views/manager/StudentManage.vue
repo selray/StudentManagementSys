@@ -78,7 +78,7 @@
       />
 
     </div>
-    <!--        “新建”弹窗-->
+    <!--        “编辑”弹窗-->
     <el-dialog title="学生信息" :visible.sync="dialogFormVisible" width="30%" >
       <el-form label-width="80px" size="small">
         <el-form-item label="学号">
@@ -103,6 +103,40 @@
           <el-input v-model="form.pswd" autocomplete="off" />
         </el-form-item>
       </el-form>
+      <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取消</el-button>
+        <el-button type="primary" @click="update">
+          确认
+        </el-button>
+      </span>
+      </template>
+    </el-dialog>
+      <!--        “新建”弹窗-->
+      <el-dialog title="学生信息" :visible.sync="dialogFormVisible2" width="30%" >
+        <el-form label-width="80px" size="small">
+          <el-form-item label="学号">
+            <el-input v-model="form.studentid" autocomplete="off" />
+          </el-form-item>
+          <el-form-item label="姓名">
+            <el-input v-model="form.name" autocomplete="off" />
+          </el-form-item>
+          <el-form-item label="性别">
+            <el-input v-model="form.sex" autocomplete="off" />
+          </el-form-item>
+          <el-form-item label="联系方式">
+            <el-input v-model="form.mobilephone" autocomplete="off" />
+          </el-form-item>
+          <el-form-item label="专业">
+            <el-input v-model="form.sprofession" autocomplete="off" />
+          </el-form-item>
+          <el-form-item label="账户">
+            <el-input v-model="form.logn" autocomplete="off" />
+          </el-form-item>
+          <el-form-item label="密码">
+            <el-input v-model="form.pswd" autocomplete="off" />
+          </el-form-item>
+        </el-form>
       <template #footer>
       <span class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取消</el-button>
@@ -136,6 +170,7 @@ export default {
       age:"",
       nativeplace:"",
       dialogFormVisible: false,
+      dialogFormVisible2:false,
       multipleSelection: [],
       form: {},
       headerBg: 'headerBg'
@@ -169,21 +204,33 @@ export default {
           })
 
     },
-    save(){
+    update(){
       //发送数据到后端
-      this.request.post("/student",this.form)
+      this.request.post("/student/update",this.form)
           .then(res => {
             if(res){
-              this.$message.success("保存成功")
+              this.$message.success("编辑成功")
               this.dialogFormVisible = false
               this.load()
             }else {
-              this.$message.error("保存失败")
+              this.$message.error("编辑失败")
+            }
+          })
+    },
+    save(){
+      this.request.post("/student/save",this.form)
+          .then(res => {
+            if(res){
+              this.$message.success("新增成功")
+              this.dialogFormVisible2 = false
+              this.load()
+            }else {
+              this.$message.error("新增失败")
             }
           })
     },
     handleAdd(){
-      this.dialogFormVisible = true
+      this.dialogFormVisible2 = true
       this.form = {}
     },
     handleEdit(row){

@@ -30,7 +30,7 @@ public class Manager implements Serializable {
       private String mnumber;
 
     private String musername;
-    @TableField(value = "mpassword", typeHandler = MD5TypeHandler.class)
+//    @TableField(value = "mpassword", typeHandler = MD5TypeHandler.class)
     private String mpassword;
 
     private String mname;

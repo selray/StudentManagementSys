@@ -13,7 +13,10 @@ import com.example.springboot.controller.dto.TeacherDTO;
 import com.example.springboot.entity.Sclass;
 import com.example.springboot.entity.Student;
 import com.example.springboot.entity.Teacher;
+import com.example.springboot.mapper.StudentMapper;
+import com.example.springboot.mapper.TeacherMapper;
 import com.example.springboot.service.ITeacherService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -33,18 +36,38 @@ import java.util.List;
 @RestController
 @RequestMapping("/teacher")
 public class TeacherController {
-
+    @Autowired
+    private TeacherMapper teacherMapper;
 
     @Resource
     private ITeacherService teacherService;
 
     //新增或更新
-    @PostMapping
+    @PostMapping("/update")
     public boolean save(@RequestBody Teacher teacher){
-        //新增或者更新
+        QueryWrapper<Teacher> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("tnumber", teacher.getTnumber());
+        Teacher objectteacher=teacherMapper.selectOne(queryWrapper);
+        objectteacher.setTnumber(teacher.getTnumber());
+        objectteacher.setTname(teacher.getTname());
+        objectteacher.setTsex(teacher.getTsex());
+        objectteacher.setTwage(teacher.getTwage());
+        objectteacher.setTusername(teacher.getTusername());
+        if(teacher.getTpassword().equals(objectteacher.getTpassword()))
+        {
+            objectteacher.setTpassword(teacher.getTpassword());
+        }
+        else objectteacher.setPassword(teacher.getTpassword());
+
+
+
+        return teacherService.saveOrUpdate(objectteacher);
+    }
+    @PostMapping("/save")
+    public boolean update(@RequestBody Teacher teacher){
+        teacher.setPassword(encryptPassword(teacher.getTpassword()));
         return teacherService.saveOrUpdate(teacher);
     }
-
     //删除
     @DeleteMapping("/{id}")
     public boolean  delete(@PathVariable Integer id){

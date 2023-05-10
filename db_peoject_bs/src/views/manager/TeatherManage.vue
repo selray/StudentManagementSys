@@ -76,8 +76,38 @@
       />
 
     </div>
-    <!--        “新建”弹窗-->
+    <!--        “编辑”弹窗-->
     <el-dialog title="教师信息" :visible.sync="dialogFormVisible" width="30%" >
+      <el-form label-width="80px" size="small">
+        <el-form-item label="教师号">
+          <el-input v-model="form.tnumber" autocomplete="off" />
+        </el-form-item>
+        <el-form-item label="姓名">
+          <el-input v-model="form.tname" autocomplete="off" />
+        </el-form-item>
+        <el-form-item label="性别">
+          <el-input v-model="form.tsex" autocomplete="off" />
+        </el-form-item>
+        <el-form-item label="职位">
+          <el-input v-model="form.tstatus" autocomplete="off" />
+        </el-form-item>
+        <el-form-item label="账户">
+          <el-input v-model="form.tusername" autocomplete="off" />
+        </el-form-item>
+        <el-form-item label="密码">
+          <el-input v-model="form.tpassword" autocomplete="off" />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取消</el-button>
+        <el-button type="primary" @click="update">
+          确认
+        </el-button>
+      </span>
+      </template>
+    </el-dialog>
+    <el-dialog title="教师信息" :visible.sync="dialogFormVisible2" width="30%" >
       <el-form label-width="80px" size="small">
         <el-form-item label="教师号">
           <el-input v-model="form.tnumber" autocomplete="off" />
@@ -126,6 +156,7 @@ export default {
       tusername:"",
       tpassword:"",
       dialogFormVisible: false,
+      dialogFormVisible2: false,
       multipleSelection: [],
       form: {},
       headerBg: 'headerBg'
@@ -155,9 +186,22 @@ export default {
           })
 
     },
+    update(){
+      //发送数据到后端
+      this.request.post("/teacher/update",this.form)
+          .then(res => {
+            if(res){
+              this.$message.success("编辑成功")
+              this.dialogFormVisible = false
+              this.load()
+            }else {
+              this.$message.error("编辑失败")
+            }
+          })
+    },
     save(){
       //发送数据到后端
-      this.request.post("/teacher",this.form)
+      this.request.post("/teacher/save",this.form)
           .then(res => {
             if(res){
               this.$message.success("保存成功")
@@ -169,7 +213,7 @@ export default {
           })
     },
     handleAdd(){
-      this.dialogFormVisible = true
+      this.dialogFormVisible2 = true
       this.form = {}
     },
     handleEdit(row){

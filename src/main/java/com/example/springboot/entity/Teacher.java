@@ -47,7 +47,8 @@ public class Teacher implements Serializable {
     @Alias("username")       //设置别名,和userDTO对应
     private String tusername;
 
-    @Alias("password")@TableField(value = "tpassword", typeHandler = MD5TypeHandler.class)
+    @Alias("password")
+//    @TableField(value = "tpassword", typeHandler = MD5TypeHandler.class)
     private String tpassword;
 
     private String avatarurl;
