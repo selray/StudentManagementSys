@@ -213,8 +213,8 @@ export default {
 }
 </script>
 
-<style>
+<style >
 .headerBg{
-  background: #eee !important;
+  background: #ccc !important;
 }
 </style>

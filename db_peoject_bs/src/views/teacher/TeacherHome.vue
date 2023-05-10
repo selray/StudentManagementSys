@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>欢迎进入教师端学生选课管理系统</h1>
+    <h1>欢迎进入学生选课管理系统</h1>
     <br>
     <el-card class="box-card">
       <div >
@@ -15,7 +15,7 @@
 
 <script>
 export default {
-  name: "Home"
+  name: "Home",
 }
 </script>
 

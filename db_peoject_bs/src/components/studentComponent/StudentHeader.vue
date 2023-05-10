@@ -18,13 +18,13 @@
 
         <!--    <i class="el-icon-setting" style="margin-right: 15px"></i>-->
       </div>
-      <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item>
-          <router-link to="/studentmanage/personinfo" >个人信息</router-link>
+      <el-dropdown-menu slot="dropdown" style="width: 100px;text-align: center">
+        <el-dropdown-item style="font-size: 14px;padding: 5px 0">
+          <router-link to="/studentmanage/personinfo"  style="text-decoration: none">个人信息</router-link>
         </el-dropdown-item>
-        <el-dropdown-item>
-          <span style="text-decoration: none" @click="logout">退出</span>
-        </el-dropdown-item>
+        <span @click="logout">
+          <el-dropdown-item style="font-size: 14px;padding: 5px 0">退出</el-dropdown-item>
+        </span>
       </el-dropdown-menu>
     </el-dropdown>
   </div>

@@ -19,7 +19,7 @@
   </el-container>
 </template>
 
-<script>
+<script >
 import Aside from "@/components/teacherComponent/TeacherAside.vue";
 import Header from "@/components/teacherComponent/TeacherHeader.vue";
 

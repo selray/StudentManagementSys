@@ -19,8 +19,8 @@
     </div>
 
     <!-- 该名教师教授的所有的课程-->
-    <div class="grid-content bg-purple-light">
-      <el-table :data="myClassDetails" :header-cell-style="{background:'#ADD8E6',color:'#606266'}" border stripe header-cell-class-name="headerBg">
+    <div >
+      <el-table :data="myClassDetails"  border stripe :header-cell-style="{backgroundColor:'#ccc'}">
         <el-table-column prop="lnumber" label="课程号" ></el-table-column>
         <el-table-column prop="classname" label="课程名" ></el-table-column>
         <el-table-column prop="lessontime" label="上课时间" ></el-table-column>
@@ -51,7 +51,7 @@
 
     <el-dialog title="选课名单" :visible.sync="dialogVisible" width="40%" >
       <div class="grid-content bg-purple-light">
-        <el-table :data="myClassStudents" :header-cell-style="{background:'#ADD8E6',color:'#606266'}" border stripe header-cell-class-name="headerBg">
+        <el-table :data="myClassStudents"  border stripe :header-cell-style="{backgroundColor:'#ccc'}">
           <el-table-column prop="studentid" label="学号" ></el-table-column>
           <el-table-column prop="name" label="姓名" ></el-table-column>
           <el-table-column prop="sex" label="性别" ></el-table-column>
@@ -105,7 +105,7 @@ export default {
       user:[],
       myClassDetails: [],
       // 选择指定课程的学生信息
-      myClassStudents: []
+      myClassStudents: [],
     }
   },
   created() {
@@ -120,6 +120,9 @@ export default {
       if (data) {
         Vue.set(this, 'user', data);
       }
+    },
+    headerRowStyle(){
+      return 'headerBg';
     },
     // 2. 下拉框功能，查询当前教师所有的课程名
     myClassName(){
@@ -206,5 +209,7 @@ export default {
 </script>
 
 <style scoped>
-
+.headerBg{
+  background: red !important;
+}
 </style>

@@ -18,16 +18,22 @@
 
 
         <el-form-item label="学号">
-          <el-input v-model="form.studentid" autocomplete="off" />
+          <el-input v-model="form.studentid" autocomplete="off" :disabled="true"/>
         </el-form-item>
         <el-form-item label="姓名">
-          <el-input v-model="form.name" autocomplete="off" />
+          <el-input v-model="form.name" autocomplete="off" :disabled="true"/>
         </el-form-item>
         <el-form-item label="性别">
-          <el-input v-model="form.sex" autocomplete="off" />
+          <el-input v-model="form.sex" autocomplete="off" :disabled="true"/>
         </el-form-item>
         <el-form-item label="年龄">
-          <el-input v-model="form.age" autocomplete="off" />
+          <el-input v-model="form.age" autocomplete="off" :disabled="true"/>
+        </el-form-item>
+        <el-form-item label="账号">
+          <el-input v-model="form.logn" autocomplete="off" />
+        </el-form-item>
+        <el-form-item label="密码">
+          <el-input v-model="form.pswd" autocomplete="off" />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="save">确认</el-button>
@@ -63,7 +69,7 @@ export default {
     save(){
       //发送数据到后端
       //this.$message.success("保存信息："+this.form.avatarUrl)
-      this.request.post("/student",this.form).then(res => {
+      this.request.post("/student/update",this.form).then(res => {
         if(res){
           this.$message.success("保存成功")
           //触发父级更新user的方法

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div style="margin-bottom:45px;">
-      <el-table :data="tableData" border stripe header-cell-class-name="headerBg" @selection-change="handleSelectionChange" :row-style="{height:'25px'}" :cell-style="{padding:'0'}">
+      <el-table :data="tableData" border stripe :header-cell-style="{backgroundColor:'#ccc'}" @selection-change="handleSelectionChange" :row-style="{height:'25px'}" :cell-style="{padding:'0'}">
         <el-table-column prop="id" label="编号" width="50" align="center">
           <template slot-scope="scope">
           <span>
@@ -28,7 +28,7 @@
     <div class="font_div">
       课 程 表
     </div>
-    <el-table :data="ClassTable" border stripe header-cell-class-name="headerBg" @selection-change="handleSelectionChange" :row-style="{height:'35px'}" :cell-style="{padding:'0'}">
+    <el-table :data="ClassTable" border stripe :header-cell-style="{backgroundColor:'#ccc'}" @selection-change="handleSelectionChange" :row-style="{height:'35px'}" :cell-style="{padding:'0'}">
       <el-table-column fixed prop="firstCol" label="" width="50px">
       </el-table-column>
       <el-table-column fixed prop="tabletime" label="上课时间" >
@@ -70,6 +70,7 @@ export default {
       multipleSelection: [],
       StringIndex:"",
       IntData: 0,
+      headerBg:'headerBg'
     }
   },
   created() {
@@ -351,7 +352,7 @@ export default {
 
 <style scoped>
 .headerBg{
-  background: #ccc !important;
+  background: #CCC !important;
 }
 
 .font_div{

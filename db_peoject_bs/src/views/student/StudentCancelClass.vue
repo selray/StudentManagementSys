@@ -272,7 +272,7 @@ export default {
 }
 </script>
 
-<style>
+<style >
 .headerBg{
   background: #ccc !important;
 }

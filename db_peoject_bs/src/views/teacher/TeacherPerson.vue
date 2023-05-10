@@ -25,7 +25,13 @@
         <el-input v-model="form.tsex" autocomplete="off" />
       </el-form-item>
       <el-form-item label="生日">
-        <el-input v-model="form.tbirthday" autocomplete="off" />
+        <el-input v-model="form.tbirthday" autocomplete="off" :disabled="true"/>
+      </el-form-item>
+      <el-form-item label="账号">
+        <el-input v-model="form.tusername" autocomplete="off" />
+      </el-form-item>
+      <el-form-item label="密码">
+        <el-input v-model="form.tpassword" autocomplete="off" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="save">确 定</el-button>
@@ -55,7 +61,7 @@ export default {
       return  (await this.request.get('/teacher/id/'+this.user.tnumber)).data
     },
     save(){
-      this.request.post("/teacher",this.form).then(res=>{
+      this.request.post("/teacher/update",this.form).then(res=>{
         if(res){
           this.$message.success("保存成功")
 
