@@ -65,7 +65,7 @@ public class TeacherController {
     }
     @PostMapping("/save")
     public boolean update(@RequestBody Teacher teacher){
-        teacher.setPassword(encryptPassword(teacher.getTpassword()));
+        teacher.setTpassword(encryptPassword(teacher.getTpassword()));
         return teacherService.saveOrUpdate(teacher);
     }
     //删除

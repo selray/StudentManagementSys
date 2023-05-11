@@ -100,7 +100,7 @@ public class StudentController {
     }
     @PostMapping("/save")
     public boolean update(@RequestBody Student student){
-        student.setPassword(encryptPassword(student.getPswd()));
+        student.setPswd(encryptPassword(student.getPswd()));
         return studentService.saveOrUpdate(student);
     }
     //删除
