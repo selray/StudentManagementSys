@@ -2,9 +2,9 @@
   <div>
     <div style="margin: 10px 0">
       <el-input style="width: 200px" placeholder="请输入课程号" suffix-icon="el-icon-search" v-model="lnumber"></el-input>
-<!--      <el-input style="width: 200px" placeholder="请输入课程名称" class="ml-5" suffix-icon="el-icon-position" v-model="classname"></el-input>-->
+      <el-input style="width: 200px" placeholder="请输入课程名称" class="ml-5" suffix-icon="el-icon-search" v-model="classname"></el-input>
 
-      <el-input style="width: 200px" placeholder="请输入教师号" class="ml-5" suffix-icon="el-icon-message" v-model="tnumber"></el-input>
+      <el-input style="width: 200px" placeholder="请输入教师号" class="ml-5" suffix-icon="el-icon-search" v-model="tnumber"></el-input>
       <!--      <el-input style="width: 200px" placeholder="请输入开课学院号" class="ml-5" suffix-icon="el-icon-position" v-model="lcollege"></el-input>-->
       <el-button class="ml-5" type="primary" @click="load">搜索</el-button>
       <el-button type="warning" @click="reset">重置</el-button>
@@ -182,7 +182,8 @@ export default {
           semester: this.semester,
           lessontime: this.lessontime,
           classroom: this.classroom,
-          maxsize: this.maxsize
+          maxsize: this.maxsize,
+          classname: this.classname,
         }
       })
           .then(res => {
@@ -392,7 +393,7 @@ export default {
       this.load()
     },
     exp(){
-      window.open("http://124.71.166.37:9090/sclass/export")
+      window.open("http://localhost:9090/sclass/export")
     },
     handleExcelImportSuccess(){
       this.$message.success("文件上传成功！")

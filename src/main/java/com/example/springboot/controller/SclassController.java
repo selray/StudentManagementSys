@@ -140,7 +140,8 @@ public class SclassController {
                                       @RequestParam(defaultValue = "") String semester,
                                       @RequestParam(defaultValue = "") String lessontime,
                                       @RequestParam(defaultValue = "") String classroom,
-                                      @RequestParam(defaultValue = "") String maxsize){
+                                      @RequestParam(defaultValue = "") String maxsize,
+                                         @RequestParam(defaultValue = "") String classname){
         IPage<SclassAndName> page;
         QueryWrapper<Sclass> queryWrapper = new QueryWrapper<>();
         if(!"".equals(tnumber)){
@@ -169,7 +170,9 @@ public class SclassController {
         for (Sclass o : sclasses) {
             QueryWrapper<Lesson> lessonQueryWrapper = new QueryWrapper<>();
             lessonQueryWrapper.eq("lnumber",o.getLnumber());
-
+            if(!"".equals(classname)){
+                lessonQueryWrapper.like("lname",classname);
+            }
             lesson = lessonMapper.selectOne(lessonQueryWrapper);
             //找到某一个课程对应的课程名称以及课程学分
             //接下来，进行整合
@@ -180,9 +183,13 @@ public class SclassController {
 //            lesson = lessonMapper.selectOne(lessonQueryWrapper);
             //找出对应课程中的课程名称以及学分
             //构造实体，以便于返回数据
-            SclassAndName sclassAndClassName = new SclassAndName(o,lesson.getLname(),lesson.getLcredit());
+            if(lesson != null)
+            {
+                SclassAndName sclassAndClassName = new SclassAndName(o,lesson.getLname(),lesson.getLcredit());
+                result.add(sclassAndClassName);
+            }
 
-            result.add(sclassAndClassName);
+
             //每次拼接一条记录
         }
         page = listToPage(result,pageNum,pageSize);

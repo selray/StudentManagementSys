@@ -71,7 +71,7 @@ public class FileController {
         }else {
             //数据库不存在重复的文件
             //把获取到的文件存储到磁盘目录
-            url = "http://124.71.166.37:9090/file/"+fileUUid;
+            url = "http://localhost:9090/file/"+fileUUid;
         }
         //获取文件url
         //把获取到的文件存储到磁盘目录中
