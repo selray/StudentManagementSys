@@ -43,13 +43,18 @@ export default {
   },
   methods:{
     async getUser(){
-      console.log("123======="+(await this.request.get('/manager/mnumber/'+this.user.mnumber)).data)
+      // console.log("123======="+(await this.request.get('/manager/mnumber/'+this.user.mnumber)).data)
       return  (await this.request.get('/manager/mnumber/'+this.user.mnumber)).data
     },
     save(){
       this.request.post("/manager",this.form).then(res=>{
         if(res){
           this.$message.success("保存成功")
+
+          //触发父级更新user的方法
+          this.$emit("refreshUser")
+          //保存之后，触发manage的父级，通过父级中的功能来实现更新以及右上角头像的更新
+
 
           //更新浏览器存储信息
           this.getUser().then(res =>{

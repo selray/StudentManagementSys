@@ -13,7 +13,7 @@
       <div style="display: inline-block">
         <!--      头像功能，15节内容-->
         <img :src="user.avatarurl" alt="" style="width: 30px;border-radius: 50%;position: relative;top:10px;right:5px">
-        <span>{{ user.name }}</span>
+        <span>{{ user.tname }}</span>
         <!--      这里的参数是后台.controller.dto中userdto的内容-->
         <i class="el-icon-arrow-down" style="margin-left: 5px;"></i>
       </div>
@@ -34,7 +34,8 @@ export default {
   name: "Header",
   props: {
     collapseBtnClass: String,
-    collapse: ''
+    collapse: '',
+    user: Object
   },
   computed:{
     currentPathName(){
@@ -43,7 +44,7 @@ export default {
   },
   data(){
     return{
-      user:localStorage.getItem("loguserinfo")? JSON.parse(localStorage.getItem("loguserinfo")):{}
+      // user:localStorage.getItem("loguserinfo")? JSON.parse(localStorage.getItem("loguserinfo")):{}
     }
   },
   watch:{

@@ -65,6 +65,12 @@ export default {
         if(res){
           this.$message.success("保存成功")
 
+          //触发父级更新user的方法
+          this.$emit("refreshUser")
+          //保存之后，触发manage的父级，通过父级中的功能来实现更新以及右上角头像的更新
+
+
+
           //更新浏览器存储信息
           this.getUser().then(res =>{
             //console.log(res)

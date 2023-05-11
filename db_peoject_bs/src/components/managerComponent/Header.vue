@@ -35,7 +35,7 @@ export default {
   props:{
     collapseBtnClass: String,
     collapse: '',
-
+    user: Object
   },
   computed:{
     currentPathName(){
@@ -49,7 +49,7 @@ export default {
   },
   data(){
     return{
-      user:localStorage.getItem("loguserinfo")? JSON.parse(localStorage.getItem("loguserinfo")):{}
+      // user:localStorage.getItem("loguserinfo")? JSON.parse(localStorage.getItem("loguserinfo")):{}
     }
   },
   created() {

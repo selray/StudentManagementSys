@@ -2,7 +2,7 @@
   <el-container style="min-height: 100vh;">
 
     <el-aside :width="sideWidth + 'px'" style="background-color: rgb(238, 241, 246);min-height: 100%; box-shadow: 2px 0 6px rgb(0 21 41 /35%)">
-      <Aside :isCollapse="isCollapse" :logoTextShow="logoTextShow "/>
+      <Aside :isCollapse="isCollapse" :logoTextShow="logoTextShow " :user="user"/>
     </el-aside>
 
     <el-container>
@@ -63,10 +63,10 @@ export default {
     },
     getUser(){
       //从后台获取数据
-      let studentid = localStorage.getItem("loguserinfo")?JSON.parse(localStorage.getItem("loguserinfo")).studentid:""
-      this.request.get("/student/studentid/" + studentid).then(res =>{
+      let mnumber = localStorage.getItem("loguserinfo")?JSON.parse(localStorage.getItem("loguserinfo")).mnumber:""
+      this.request.get("/manager/" + mnumber).then(res =>{
       //重新复制后台的最新数据
-        this.user = res.data
+        this.user = res
       })
     }
 
