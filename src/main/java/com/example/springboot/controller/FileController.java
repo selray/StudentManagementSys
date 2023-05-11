@@ -11,7 +11,10 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.example.springboot.common.Result;
 import com.example.springboot.entity.Files;
-import com.example.springboot.mapper.FileMapper;
+import com.example.springboot.entity.Manager;
+import com.example.springboot.entity.Student;
+import com.example.springboot.entity.Teacher;
+import com.example.springboot.mapper.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,6 +33,16 @@ public class FileController {
 
     @Value("${files.upload.path}")//引用application中的路径
     private String fileuploadPAth;
+
+    @Resource
+    private StudentController studentController;
+    @Resource
+    private StudentMapper studentMapper;
+    @Resource
+    private TeacherMapper teacherMapper;
+    @Resource
+    private ManagerMapper managerMapper;
+
 
     @Resource
     private FileMapper fileMapper;
@@ -71,7 +84,7 @@ public class FileController {
         }else {
             //数据库不存在重复的文件
             //把获取到的文件存储到磁盘目录
-            url = "http://localhost:9090/file/"+fileUUid;
+            url = "http://124.71.166.37:9090/file/"+fileUUid;
         }
         //获取文件url
         //把获取到的文件存储到磁盘目录中
@@ -88,9 +101,36 @@ public class FileController {
         return url; //文件下载链接
         //上传成功后返回url
     }
+    @GetMapping("/stuavartarinfo")
+    public void setavartarinfo(@RequestParam String avartarurl,@RequestParam String studentid) throws IOException {
 
-    //文件下载接口：http://124.71.166.37:9090/file/{fileUUid}
-    //下载接口
+        QueryWrapper<Student> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("studentid",studentid);
+        Student student = studentMapper.selectOne(queryWrapper);
+        student.setAvatarurl(avartarurl);
+        studentMapper.updateById(student);
+
+    }
+    @GetMapping("/teaavartarinfo")
+    public void setavartarinfo2(@RequestParam String avartarurl,@RequestParam String tnumber) throws IOException {
+
+        QueryWrapper<Teacher> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("tnumber",tnumber);
+        Teacher teacher = teacherMapper.selectOne(queryWrapper);
+        teacher.setAvatarurl(avartarurl);
+        teacherMapper.updateById(teacher);
+
+    }
+    @GetMapping("/manavartarinfo")
+    public void setavartarinfo3(@RequestParam String avartarurl,@RequestParam String mnumber) throws IOException {
+
+        QueryWrapper<Manager> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("mnumber",mnumber);
+        Manager manager = managerMapper.selectOne(queryWrapper);
+        manager.setAvatarurl(avartarurl);
+        managerMapper.updateById(manager);
+
+    }
     @GetMapping("/{fileUUid}")
     public void download(@PathVariable String fileUUid , HttpServletResponse response) throws IOException {
 

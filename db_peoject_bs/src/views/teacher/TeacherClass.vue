@@ -198,7 +198,7 @@ export default {
     },
     exp(data){
       let tnumber = this.user.tnumber;
-      window.open('http://localhost:9090/lessonchoose/exportClassStudents?tnumber='+ tnumber + '&lnumber=' + data.lnumber);
+      window.open('http://124.71.166.37:9090/lessonchoose/exportClassStudents?tnumber='+ tnumber + '&lnumber=' + data.lnumber);
     },
     reset(){
       this.searchInfo = {};

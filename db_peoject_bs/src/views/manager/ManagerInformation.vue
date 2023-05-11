@@ -67,6 +67,16 @@ export default {
     },
     handleAvatarSuccess(res){
       this.form.avatarurl = res
+
+      this.request.get("/file/manavartarinfo",{
+        params:{
+          avartarurl: res,
+          mnumber: JSON.parse(localStorage.getItem("loguserinfo")).mnumber
+        }
+      })
+          .then(res => {
+            this.$message.success("保存成功")
+          })
       //this.$message.success("路径"+this.form.avatarUrl)
       //this.$message.success("路径"+res)
     }

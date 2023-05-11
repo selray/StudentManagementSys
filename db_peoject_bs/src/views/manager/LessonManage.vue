@@ -142,7 +142,7 @@ export default {
       this.load()
     },
     exp(){
-      window.open("http://localhost:9090/lesson/export")
+      window.open("http://124.71.166.37:9090/lesson/export")
     },
     handleSelectionChange(val){
       console.log(val)

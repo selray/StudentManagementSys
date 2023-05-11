@@ -238,7 +238,7 @@ export default {
     },
     exp(){
       // window.open("http://124.71.166.37:9090/sclass/export")
-      window.open("http://localhost:9090/sclass/export")
+      window.open("http://124.71.166.37:9090/sclass/export")
 
     },
     handleExcelImportSuccess(){
