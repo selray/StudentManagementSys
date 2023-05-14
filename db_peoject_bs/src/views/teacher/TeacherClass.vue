@@ -95,6 +95,7 @@ export default {
       total_1:0,
       pageNum_1:1,
       pageSize_1:5,
+      currentlnumber:'',
 
       dialogVisible: false,
       searchInfo: {
@@ -164,12 +165,12 @@ export default {
     handleSizeChange_1(pageSize_1) {
       console.log(`每页 ${pageSize_1} 条`);
       this.pageSize_1 = pageSize_1
-      this.getStudentDetails();
+      this.getCurrentStudentDetails();
     },
     handleCurrentChange_1(pageNum_1) {
       console.log(`当前页: ${pageNum_1}`);
       this.pageNum_1 = pageNum_1
-      this.getStudentDetails();
+      this.getCurrentStudentDetails();
     },
     // 4. 弹窗关闭按钮功能绑定
     handleClose(done) {
@@ -181,16 +182,34 @@ export default {
     },
     // 5. 相应课程所选学生信息：
     getStudentDetails(data){
+      this.currentlnumber=data.lnumber       //存一下选择的哪节课，为了分页准备
       this.dialogVisible = true
       this.request.get("/lessonchoose/getClassStudents", {
         params: {
-          pageNum: this.pageNum,
-          pageSize: this.pageSize,
+          pageNum: this.pageNum_1,
+          pageSize: this.pageSize_1,
           tnumber: this.user.tnumber,
           lnumber: data.lnumber
         }
       }).then(response => {
         if (response.code == "200"){
+          this.myClassStudents = response.data.records;
+          this.total_1 = response.data.total;
+        }
+      })
+    },
+    getCurrentStudentDetails(){
+      this.dialogVisible = true
+      this.request.get("/lessonchoose/getClassStudents", {
+        params: {
+          pageNum: this.pageNum_1,
+          pageSize: this.pageSize_1,
+          tnumber: this.user.tnumber,
+          lnumber: this.currentlnumber
+        }
+      }).then(response => {
+        if (response.code == "200"){
+          console.log(response.data)
           this.myClassStudents = response.data.records;
           this.total_1 = response.data.total;
         }
